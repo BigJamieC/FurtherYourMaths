@@ -1,0 +1,37 @@
+h1 {
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: 25px;
+    color: black;
+    text-align: center;
+    position: relative; 
+    margin: 2;
+}
+a{
+    background-color: grey;
+    color: black;
+    padding: 15px 25px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-size: 20px;
+    margin: 5px;
+    border-radius: 10px;
+}
+a.home{
+    background-color: grey;
+    color: black;
+    padding: 15px 25px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-size: 20px;
+    margin: 0px;
+    border-radius: 0px;
+}
+div.NavBar {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
