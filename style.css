@@ -9,26 +9,13 @@ h1 {
 a{
     background-color: grey;
     color: black;
-    padding: 15px 25px;
+    padding: 4% 7%;
     text-align: center;
     text-decoration: none;
     display: inline-block;
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
     font-size: 20px;
-    margin: 5px;
     border-radius: 10px;
-}
-a.home{
-    background-color: grey;
-    color: black;
-    padding: 15px 25px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-    font-size: 20px;
-    margin: 0px;
-    border-radius: 0px;
 }
 div.NavBar {
     text-align: center;
