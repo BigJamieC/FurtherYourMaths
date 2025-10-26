@@ -4,21 +4,104 @@
     <link rel="stylesheet" href="style.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FurtherYourMaths</title>
+    <title>Further Your Maths</title>
 </head>
 <body>
+    <!-- Decorative gradient edges -->
+    <div class="side-gradient left"></div>
+    <div class="side-gradient right"></div>
+
+     <!-- Navigation Bar -->
     <div class="NavBar">
         <a href="tutorial.html" class="NavItem">Tutorial</a>
+        <span class="line"></span>
         <a href="quickanswers.html" class="NavItem">Quick Answer</a>
+        <span class="line"></span>
         <a href="shortquiz.html" class="NavItem">Short quiz</a>
+        <span class="line"></span>
         <a href="longquiz.html" class="NavItem">Long quiz</a>
+        <span class="line"></span>
         <a href="custom.html" class="NavItem">Custom</a>
-    <div class="WelcomeMessage">
-        <h1 class="HomeTitle">Further Your Maths</h1>
-        <p>Your journey to mastering further maths algorithms starts here!</p>
     </div>
-    <div class="InformationSection">
-        <h2>About FurtherYourMaths</h2>
-        <p>FurtherYourMaths is dedicated to helping students excel in advanced mathematics through comprehensive tutorials, quick answers, and engaging quizzes. Whether you're looking to strengthen your understanding or test your knowledge, we've got you covered!</p>
+
+    <!-- Floating Math Tip -->
+    <div class="math-tip">
+        <button class="close-tip">&times;</button>
+        <h3>💡 Math Tip</h3>
+        <p>Did you know? The sum of the first n odd numbers equals n².</p>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <h1>Further Your Maths</h1>
+        <p class="tagline">Empower your understanding — one equation at a time.</p>
+
+        <p>
+            <strong>Further Your Maths</strong> is your interactive learning companion designed to make maths more intuitive,
+            engaging, and practical. Whether you're revising for exams, brushing up on your problem-solving skills, or exploring
+            new mathematical concepts, this platform provides the guidance and tools you need to succeed.
+        </p>
+
+        <ul class="feature-list">
+            <li>
+                <details>
+                    <summary><b>Tutorials</b> — Step-by-step lessons to help you understand key mathematical topics.</summary>
+                    <p class="dropdown">
+                        Each tutorial walks you through essential maths concepts clearly and visually, with worked examples
+                        and explanations. These lessons aim to simplify complex ideas into manageable learning chunks, perfect
+                        for self-paced study or revision.
+                    </p>
+                </details>
+            </li>
+
+            <li>
+                <details>
+                    <summary><b>Quick Answers</b> — Get instant solutions and explanations for specific problems.</summary>
+                    <p class="dropdown">
+                        Use the Quick Answers section when you need a fast solution. Just select your topic and difficulty level,
+                        and you'll receive detailed steps explaining not just the answer, but how to get there logically.
+                    </p>
+                </details>
+            </li>
+
+            <li>
+                <details>
+                    <summary><b>Short Quiz</b> — Quick tests for focused, time-efficient practice.</summary>
+                    <p class="dropdown">
+                        The Short Quiz mode provides fast, focused tests with a few carefully selected questions. It's perfect
+                        for when you have limited time but want to reinforce specific topics or warm up before a longer study session.
+                        Get instant feedback and see which areas need attention.
+                    </p>
+                </details>
+            </li>
+
+            <li>
+                <details>
+                    <summary><b>Long Quiz</b> — Comprehensive tests to evaluate your overall understanding.</summary>
+                    <p class="dropdown">
+                        The Long Quiz is designed to challenge your full mathematical knowledge. It covers multiple topics and
+                        question types, giving you a realistic exam-style experience. Review your results with detailed explanations
+                        to track improvement and master complex concepts.
+                    </p>
+                </details>
+            </li>
+
+            <li>
+                <details>
+                    <summary><b>Custom Mode</b> — Create personalized quizzes that match your learning goals.</summary>
+                    <p class="dropdown">
+                        Tailor your learning experience by designing custom quizzes. Choose topics, question types, and
+                        difficulty settings to focus on what matters most to you. Ideal for revision before exams or skill-building.
+                    </p>
+                </details>
+            </li>
+        </ul>
+
+        <p class="cta-text">
+            Ready to get started? Choose a section above to begin your journey to mathematical mastery.
+        </p>
+    </div>
+
+    <script src="main.js"></script>
 </body>
 </html>

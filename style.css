@@ -1,3 +1,5 @@
+/* === Global Styles === */
+
 h1 {
     font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     font-size: 25px;
@@ -6,19 +8,246 @@ h1 {
     position: relative; 
     margin: 2;
 }
-a{
-    background-color: grey;
+
+body {
+    background-color: rgba(0, 118, 215, 0.798);
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* === Gradient Side Decorations === */
+
+.side-gradient {
+    position: fixed;
+    top: 0;
+    width: 150px; 
+    height: 100%;
+    z-index: -1;
+}
+
+
+.side-gradient.left {
+    left: 0;
+    background: linear-gradient(to bottom, rgba(0, 118, 215, 0.6), rgba(0, 80, 145, 0.8));
+}
+
+.side-gradient.right {
+    right: 0;
+    background: linear-gradient(to bottom, rgba(0, 118, 215, 0.6), rgba(0, 80, 145, 0.8));
+}
+
+/* === Navigation Bar === */
+
+a {
+    background-color: rgba(128, 128, 128, 0);
     color: black;
-    padding: 4% 7%;
+    padding: 3% 5%; 
     text-align: center;
     text-decoration: none;
     display: inline-block;
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-    font-size: 20px;
+    font-size: 22.5px;
     border-radius: 10px;
 }
+
+a:hover {
+    background-color: rgba(0, 0, 0, 0.589);
+}
+
 div.NavBar {
     text-align: center;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    margin: 0;
+    width: 100%;
+    background-color: rgba(0, 80, 145, 0.798);
+    position: relative;
+    padding: 15px 0;
+}
+/* Home button image */
+a.home img {
+    width: 80px;   
+    height: auto;    
+    vertical-align: middle;
+    display: inline-block;
+}
+
+.line {
+    border-left: 6px solid black;
+    border-top: 30px solid black;
+    border-bottom: 30px solid black;
+    height: 15px;
+    width: 2px;
+    position: relative;
+    margin: -4px;
+    right: 0.75px;
+}
+
+/* === Math Tip Box === */
+.math-tip {
+    position: fixed;
+    top: 30%;
+    right: 25px;
+    width: 230px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    padding: 15px 18px 20px 18px;
+    font-size: 16px;
+    line-height: 1.4;
+    z-index: 10;
+    animation: fadeIn 0.6s ease;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.math-tip h3 {
+    margin-top: 0;
+    margin-bottom: 5px;
+    color: #004b94;
+}
+
+/* Close button */
+.close-tip {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #004b94;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+}
+
+.close-tip:hover {
+    opacity: 1;
+}
+
+/* Hide animation */
+.math-tip.hidden {
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+}
+
+/* === Main Content === */
+
+div.content {
+    width: 100%;
+    min-height: 80vh;
+    padding: 50px 10%;
+    background-color: #ffffff; 
+    border-radius: 15px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+    text-align: center;
+    overflow: hidden; 
+}
+
+
+div.content h1 {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+div.content .tagline {
+    font-size: 20px;
+    color: #003366;
+    font-style: italic;
+    margin-bottom: 30px;
+}
+
+div.content p {
+    line-height: 1.6;
+    color: #222;
+    max-width: 800px;
+    margin: 0 auto 20px auto;
+}
+
+/* === Dropdown List === */
+
+.feature-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 25px auto;
+    max-width: 800px;
+    text-align: left;
+}
+
+.feature-list details summary {
+    cursor: pointer;
+    background: rgba(0, 118, 215, 0.1);
+    border-left: 5px solid rgba(0, 80, 145, 0.9);
+    padding: 10px 15px;
+    margin: 10px 0;
+    border-radius: 8px;
+    transition: background 0.3s ease, transform 0.2s ease;
+    list-style: none;
+}
+
+.feature-list details summary:hover {
+    background: rgba(0, 118, 215, 0.2);
+    transform: translateX(3px);
+}
+
+.feature-list summary::-webkit-details-marker {
+    display: none;
+}
+
+.feature-list summary::after {
+    content: "▼";
+    float: right;
+    font-size: 14px;
+    transition: transform 0.3s ease;
+}
+
+.feature-list details[open] summary::after {
+    transform: rotate(-180deg);
+}
+
+.feature-list .dropdown {
+    background: rgba(255, 255, 255, 0.95);
+    margin: 10px 5px 10px 15px;
+    padding: 12px 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    color: #222;
+    line-height: 1.5;
+    animation: fadeIn 0.3s ease;
+}
+
+/* Smooth fade animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* === CTA Text === */
+div.content .cta-text {
+    margin-top: 30px;
+    font-weight: bold;
+    color: #003366;
+    font-size: 18px;
+}
+
+/* === Responsive === */
+@media (max-width: 900px) {
+    .math-tip {
+        display: none; 
+    }
+    .side-gradient {
+        display: none; 
+    }
+    div.content {
+        padding: 30px 5%;
+    }
+    div.content h1 {
+        font-size: 30px;
+    }
+    div.content .tagline {
+        font-size: 18px;
+    }
 }
