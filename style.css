@@ -10,34 +10,14 @@ h1 {
 }
 
 body {
-    background-color: rgba(0, 118, 215, 0.798);
+    background-color: #ffffff; /* same as content background in light mode */
     margin: 0;
     padding: 0;
     width: 100%;
     font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     position: relative;
     overflow-x: hidden;
-}
-
-/* === Gradient Side Decorations === */
-
-.side-gradient {
-    position: fixed;
-    top: 0;
-    width: 150px; 
-    height: 100%;
-    z-index: -1;
-}
-
-
-.side-gradient.left {
-    left: 0;
-    background: linear-gradient(to bottom, rgba(0, 118, 215, 0.6), rgba(0, 80, 145, 0.8));
-}
-
-.side-gradient.right {
-    right: 0;
-    background: linear-gradient(to bottom, rgba(0, 118, 215, 0.6), rgba(0, 80, 145, 0.8));
+    color: #111; /* Improved text visibility */
 }
 
 /* === Navigation Bar === */
@@ -50,10 +30,9 @@ a {
     text-decoration: none;
     display: inline-block;
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-    font-size: 22.5px;
+    font-size: 175%;
     border-radius: 10px;
 }
-
 a:hover {
     background-color: rgba(0, 0, 0, 0.589);
 }
@@ -65,7 +44,9 @@ div.NavBar {
     background-color: rgba(0, 80, 145, 0.798);
     position: relative;
     padding: 15px 0;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
+
 /* Home button image */
 a.home img {
     width: 80px;   
@@ -73,7 +54,10 @@ a.home img {
     vertical-align: middle;
     display: inline-block;
 }
-
+a.home {
+    padding: 0; 
+    margin-right: 20px; 
+}
 .line {
     border-left: 6px solid black;
     border-top: 30px solid black;
@@ -83,6 +67,27 @@ a.home img {
     position: relative;
     margin: -4px;
     right: 0.75px;
+}
+
+/* --- Theme Toggle Button --- */
+#theme-toggle {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 22px;
+    cursor: pointer;
+    margin-left: 15px;
+    transition: transform 0.2s ease, color 0.3s ease;
+}
+
+#theme-toggle:hover {
+    transform: scale(1.2);
+    color: #ffeb3b;
+}
+
+/* --- Smooth Transition for Theme Switch --- */
+body, .content, .NavBar, h1, p, a {
+    transition: background-color 0.4s ease, color 0.4s ease;
 }
 
 /* === Math Tip Box === */
@@ -100,6 +105,7 @@ a.home img {
     z-index: 10;
     animation: fadeIn 0.6s ease;
     transition: opacity 0.4s ease, transform 0.4s ease;
+    color: #111;
 }
 
 .math-tip h3 {
@@ -140,13 +146,12 @@ div.content {
     min-height: 80vh;
     padding: 50px 10%;
     background-color: #ffffff; 
-    border-radius: 15px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
     box-sizing: border-box;
     text-align: center;
     overflow: hidden; 
+    color: #111;
 }
-
 
 div.content h1 {
     font-size: 40px;
@@ -155,14 +160,14 @@ div.content h1 {
 
 div.content .tagline {
     font-size: 20px;
-    color: #003366;
+    color: #2492ff;
     font-style: italic;
     margin-bottom: 30px;
 }
 
 div.content p {
     line-height: 1.6;
-    color: #222;
+    color: #111;
     max-width: 800px;
     margin: 0 auto 20px auto;
 }
@@ -186,6 +191,7 @@ div.content p {
     border-radius: 8px;
     transition: background 0.3s ease, transform 0.2s ease;
     list-style: none;
+    color: #111;
 }
 
 .feature-list details summary:hover {
@@ -214,7 +220,7 @@ div.content p {
     padding: 12px 15px;
     border-radius: 10px;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-    color: #222;
+    color: #111;
     line-height: 1.5;
     animation: fadeIn 0.3s ease;
 }
@@ -229,8 +235,226 @@ div.content p {
 div.content .cta-text {
     margin-top: 30px;
     font-weight: bold;
-    color: #003366;
+    color: #2492ff;
     font-size: 18px;
+}
+
+/* === Dark Mode Styles === */
+body.dark-mode {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+}
+
+body.dark-mode .content {
+    background-color: #1e1e1e;
+    box-shadow: 0 8px 25px rgba(255, 255, 255, 0.05);
+}
+
+body.dark-mode .NavBar {
+    background-color: #121212;
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.05);
+}
+
+body.dark-mode .NavItem {
+    color: #e0e0e0;
+}
+
+body.dark-mode .NavItem:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode p {
+    color: #e0e0e0;
+}
+
+body.dark-mode h1{
+    color: #64b5f6;
+}
+
+body.dark-mode b{
+    color: #81d4fa;
+}
+
+body.dark-mode summary {
+    color: #e0e0e0;
+}
+
+/* Dark mode line color */
+body.dark-mode .line {
+    border-left: 6px solid #e0e0e0;
+    border-top: 30px solid #e0e0e0;
+    border-bottom: 30px solid #e0e0e0;
+}
+
+/* Dark mode dropdowns */
+body.dark-mode .feature-list .dropdown {
+    background: rgba(40, 40, 40, 0.95);
+    color: #e0e0e0;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+    border-left: 3px solid #64b5f6;
+}
+
+/* Dark mode math tip box */
+body.dark-mode .math-tip {
+    background: rgba(40, 40, 40, 0.95);
+    color: #e0e0e0;
+    box-shadow: 0 0 15px rgba(255,255,255,0.1);
+}
+
+body.dark-mode .math-tip h3 {
+    color: #64b5f6;
+}
+
+body.dark-mode .close-tip {
+    color: #64b5f6;
+}
+
+body.dark-mode .feature-list details summary:hover {
+    background: rgba(100, 181, 246, 0.15);
+}
+/* Text box dark mode */
+body.dark-mode textarea {
+    background: rgba(40, 40, 40, 0.95);
+    color: #e0e0e0;
+    box-shadow: 0 0 15px rgba(255,255,255,0.1);
+}
+/* Output box dark mode */
+body.dark-mode .output-box {
+    background: rgba(40, 40, 40, 0.95);
+    color: #e0e0e0;
+    box-shadow: inset 0 0 10px rgba(255,255,255,0.1);
+}
+/* === Page Fade Animation === */
+body {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    transition-delay: .2s;
+}
+
+body.fade-in {
+    opacity: 1;
+}
+
+body.fade-out {
+    opacity: 0;
+}
+
+/* === Simplex Text Input Styles === */
+
+.simplex-text-container {
+    margin: 40px auto;
+    padding: 25px;
+    max-width: 800px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.15);
+    text-align: center;
+    color: #111;
+}
+
+.simplex-text-container textarea {
+    width: 100%;
+    height: 200px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    padding: 12px;
+    font-size: 16px;
+    font-family: 'Courier New', monospace;
+    resize: vertical;
+    margin-top: 10px;
+    position: relative;
+    right: 1.75%;
+}
+
+.symbol-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.symbol-btn {
+    background-color: #004b94;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.symbol-btn:hover {
+    background-color: #006cd9;
+    transform: translateY(-2px);
+}
+
+.input-actions {
+    margin-top: 15px;
+}
+
+.primary-btn {
+    background-color: #004b94;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    margin-right: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.primary-btn:hover {
+    background-color: #006cd9;
+    transform: translateY(-2px);
+}
+
+.output-box {
+    margin-top: 30px;
+    background: #f7f9fc;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+}
+
+.output-box pre {
+    text-align: left;
+    font-size: 14px;
+    font-family: 'Courier New', monospace;
+    white-space: pre-wrap;
+    background: rgba(245, 245, 245, 0.95);
+    border-radius: 8px;
+    padding: 10px;
+}
+
+/* --- Dark Mode Support for Simplex --- */
+body.dark-mode .simplex-text-container {
+    background: rgba(40, 40, 40, 0.95);
+    color: #e0e0e0;
+}
+
+body.dark-mode .symbol-btn {
+    background-color: #64b5f6;
+    color: #111;
+}
+
+body.dark-mode .symbol-btn:hover {
+    background-color: #2196f3;
+}
+
+body.dark-mode .primary-btn {
+    background-color: #64b5f6;
+    color: #111;
+}
+
+body.dark-mode .primary-btn:hover {
+    background-color: #2196f3;
+}
+
+body.dark-mode .output-box pre {
+    background: rgba(60, 60, 60, 0.95);
+    color: #e0e0e0;
 }
 
 /* === Responsive === */

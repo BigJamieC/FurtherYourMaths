@@ -7,28 +7,25 @@
     <title>Further Your Maths</title>
 </head>
 <body>
-    <!-- Decorative gradient edges -->
-    <div class="side-gradient left"></div>
-    <div class="side-gradient right"></div>
-
-     <!-- Navigation Bar -->
+    <!-- Navigation Bar -->
     <div class="NavBar">
-        <a href="tutorial.html" class="NavItem">Tutorial</a>
+        <a href="tutorial.html" class="NavItem" id="Tutorial">Tutorial</a>
         <span class="line"></span>
         <a href="quickanswers.html" class="NavItem">Quick Answer</a>
         <span class="line"></span>
-        <a href="shortquiz.html" class="NavItem">Short quiz</a>
+        <a href="shortquiz.html" class="NavItem">Short Quiz</a>
         <span class="line"></span>
-        <a href="longquiz.html" class="NavItem">Long quiz</a>
+        <a href="longquiz.html" class="NavItem">Long Quiz</a>
         <span class="line"></span>
         <a href="custom.html" class="NavItem">Custom</a>
+        <button id="theme-toggle" aria-label="Toggle dark mode">🌙</button>
     </div>
 
     <!-- Floating Math Tip -->
     <div class="math-tip">
         <button class="close-tip">&times;</button>
         <h3>💡 Math Tip</h3>
-        <p>Did you know? The sum of the first n odd numbers equals n².</p>
+        <p>Loading tip...</p>
     </div>
 
     <!-- Main Content -->
@@ -47,9 +44,9 @@
                 <details>
                     <summary><b>Tutorials</b> — Step-by-step lessons to help you understand key mathematical topics.</summary>
                     <p class="dropdown">
-                        Each tutorial walks you through essential maths concepts clearly and visually, with worked examples
-                        and explanations. These lessons aim to simplify complex ideas into manageable learning chunks, perfect
-                        for self-paced study or revision.
+                        Each tutorial walks you through Further Mathamatics algorithms clearly and visually, with worked examples
+                        and explanations. Simutaneosly, you have the option to input your question to be solved step-by-step.
+                        Perfect for learners who want to build a strong foundation and gain confidence in their skills.
                     </p>
                 </details>
             </li>
@@ -92,6 +89,14 @@
                     <p class="dropdown">
                         Tailor your learning experience by designing custom quizzes. Choose topics, question types, and
                         difficulty settings to focus on what matters most to you. Ideal for revision before exams or skill-building.
+                    </p>
+                </details>
+            </li>
+            <li>
+                <details>
+                    <summary><b>Algorithms</b> — List of pre-existing algorithms (Excludes custom code algorithms).</summary>
+                    <p class="dropdown">
+                        Simplex, Big M, PLACEHOLDER
                     </p>
                 </details>
             </li>
