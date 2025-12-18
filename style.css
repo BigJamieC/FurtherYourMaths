@@ -9,7 +9,7 @@ h1 {
     margin: 2;
 }
 h2 {
-    color: #2492ff;
+    color: #9924ff;
 }
 body {
     background-color: #ffffff; /* same as content background in light mode */
@@ -43,7 +43,7 @@ div.NavBar {
     text-align: center;
     margin: 0;
     width: 100%;
-    background-color: rgba(0, 80, 145, 0.798);
+    background-color: rgba(112, 13, 158, 0.798);
     position: relative;
     padding: 15px 0;
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
@@ -115,7 +115,7 @@ body, .content, .NavBar, h1, p, a {
 .math-tip h3 {
     margin-top: 0;
     margin-bottom: 5px;
-    color: #004b94;
+    color: #650094;
 }
 
 /* Close button */
@@ -164,7 +164,7 @@ div.content h1 {
 
 div.content .tagline {
     font-size: 20px;
-    color: #2492ff;
+    color: #7824ff;
     font-style: italic;
     margin-bottom: 30px;
 }
@@ -189,7 +189,7 @@ div.content p {
 .feature-list details summary {
     cursor: pointer;
     background: rgba(0, 118, 215, 0.1);
-    border-left: 5px solid rgba(0, 80, 145, 0.9);
+    border-left: 5px solid rgba(102, 0, 145, 0.9);
     padding: 10px 15px;
     margin: 10px 0;
     border-radius: 8px;
@@ -239,7 +239,7 @@ div.content p {
 div.content .cta-text {
     margin-top: 30px;
     font-weight: bold;
-    color: #2492ff;
+    color: #9924ff;
     font-size: 18px;
 }
 
@@ -255,7 +255,7 @@ body.dark-mode .content {
 }
 
 body.dark-mode .NavBar {
-    background-color: rgba(0, 80, 145, 0.5);
+    background-color: rgba(143, 0, 187, 0.442);
     box-shadow: 0 4px 10px rgba(255, 255, 255, 0.05);
 }
 
@@ -272,11 +272,11 @@ body.dark-mode p {
 }
 
 body.dark-mode h1{
-    color: #64b5f6;
+    color: #a864f6;
 }
 
 body.dark-mode b{
-    color: #81d4fa;
+    color: #a864f6;
 }
 
 body.dark-mode summary {
@@ -295,7 +295,7 @@ body.dark-mode .feature-list .dropdown {
     background: rgba(40, 40, 40, 0.95);
     color: #e0e0e0;
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
-    border-left: 3px solid #64b5f6;
+    border-left: 3px solid #9924ff;
 }
 
 /* Dark mode math tip box */
@@ -306,15 +306,15 @@ body.dark-mode .math-tip {
 }
 
 body.dark-mode .math-tip h3 {
-    color: #64b5f6;
+    color: #a864f6;
 }
 
 body.dark-mode .close-tip {
-    color: #64b5f6;
+    color: #a864f6;
 }
 
 body.dark-mode .feature-list details summary:hover {
-    background: rgba(100, 181, 246, 0.15);
+    background: rgba(193, 100, 246, 0.15);
 }
 /* Text box dark mode */
 body.dark-mode textarea {
