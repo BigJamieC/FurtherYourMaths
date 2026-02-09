@@ -84,7 +84,12 @@ document.addEventListener("DOMContentLoaded", () => {
         output.style.color = "red";
         output.textContent = "❌ " + msg;
     }
+    function removeError(){
+        output.textContent =""
+    }
     parseBtn.addEventListener("click", function () {
+        removeError();
+        
         const rawInput = textarea.value;
         const input = normalizeRaw(rawInput);
         if (input.length === 0 || !rawInput) {
@@ -121,6 +126,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 else 
                     objectiveType = "min"
             }
+        }
+        if (!objectiveType) {
+            showError("Please specify min or max!");
         }
         console.log(line)
             // console.log(testResult)
