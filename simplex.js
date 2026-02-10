@@ -130,9 +130,21 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!objectiveType) {
             showError("Please specify min or max!");
         }
-        console.log(line)
-            // console.log(testResult)
-            console.log(objectiveLineIndex)
-            console.log(objectiveType)
+        //console.log(line)
+           // console.log(objectiveLineIndex)
+           // console.log(objectiveType)
+        const constraintCandidates = []
+        for (let i = 0; i < line.length; i++){
+            const l =line[i];
+            if (i != objectiveLineIndex){
+                if (l.includes("=") || l.includes(">") || l.includes("<")){
+                    constraintCandidates.push(line[i]);
+                }
+            }
+        }
+        console.log(constraintCandidates)
+        let objectiveExpr = line[objectiveLineIndex] || "";
+
+
     })
 })
