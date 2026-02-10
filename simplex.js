@@ -144,6 +144,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         console.log(constraintCandidates)
         let objectiveExpr = line[objectiveLineIndex] || "";
+        objectiveExpr = (((objectiveExpr.replace(/\b(max|min)\b\s*/i, "")).replace(/^z\s*[:=]\s*/i, "")).replace(/^\s*:/, "")).trim
+        console.log(objectiveExpr)
 
 
     })
