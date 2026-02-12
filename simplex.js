@@ -6,9 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const parseBtn = document.getElementById("parse-problem"); // parse button
     const output = document.getElementById("parsed-result"); // where we will show the result
 
-    // -------------------------
     // symbol buttons
-    // -------------------------
     const symbolButtons = document.querySelectorAll(".symbol-btn");
     for (let i = 0; i < symbolButtons.length; i++) {
         symbolButtons[i].addEventListener("click", () => {
@@ -24,9 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // -------------------------
     // helper to clean up input text
-    // -------------------------
     function normalizeRaw(raw) {
         let t = raw;
         t = t.replace(/[–—]/g, "-"); // change dashes to minus
@@ -44,9 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return t.trim();
     }
 
-    // -------------------------
     // regex to parse terms like 3x1, -x2
-    // -------------------------
     const termRegex = /([+-]?\s*(?:\d*\.?\d+)?\s*)x\s*(\d+)/gi;
 
     function parseTerms(expr) {
@@ -57,16 +51,13 @@ document.addEventListener("DOMContentLoaded", () => {
             let c = (match[1] || "").replace(/\s+/g, "");
             let idx = parseInt(match[2], 10);
             if (c === "" || c == "+") c = "1";
-            if (c === "-" || c === " -") c = "-1"; // student might forget spacing sometimes
+            if (c === "-" || c === " -") c = "-1";
             let coeff = parseFloat(c);
             terms.push({ index: idx, coeff: isNaN(coeff) ? 0 : coeff });
         }
         return terms;
     }
 
-    // -------------------------
-    // find max variable index
-    // -------------------------
     function findMaxIndexFromLines(lines) {
         let maxI = 0;
         for (let i = 0; i < lines.length; i++) {
@@ -79,85 +70,137 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         return maxI;
     }
-    var errorTrue = false
+
+    var errorTrue = false;
     function showError(msg) {
         output.style.color = "red";
         output.textContent = "❌ " + msg;
-        errorTrue = true
+        errorTrue = true;
     }
     function removeError(){
-        output.textContent =""
-        errorTrue = false
+        output.textContent = "";
+        errorTrue = false;
     }
+
     parseBtn.addEventListener("click", function () {
         removeError();
-        
+
         const rawInput = textarea.value;
         const input = normalizeRaw(rawInput);
         if (input.length === 0 || !rawInput) {
             showError("Input is empty!");
             return;
         }
+
         const normalised = normalizeRaw(rawInput);
-        //console.log(normalised);
-        const line = normalised.split(/[\n,]+/).map(function (e) { //Some problems may have the constraints seperated via commas or new lines, this accounts for both.
-            return e.trim()
-        })
-        .flatMap(l => {
-            return l.split(
-                /Subject to:|Subject To:|Subject To|ST:|S\.T\.|s\.t\.|Where|Such that|With|Conditions:|Conditions|Limits:|Limits|Restrictions:|Restrictions|Constraints:|Constraints|constraint:|The:|The|the:|the|constraint/i // split on common constraint indicators, case-insensitive
-            );
-        })
-        //Removes any elements in the array that are blank or have spaces
+        let line = normalised.split(/[\n,]+/).map(e => e.trim())
+            .flatMap(l => {
+                return l.split(
+                    /Subject to:|Subject To:|Subject To|ST:|S\.T\.|s\.t\.|Where|Such that|With|Conditions:|Conditions|Limits:|Limits|Restrictions:|Restrictions|Constraints:|Constraints|constraint:|The:|The|the:|the|constraint/i
+                );
+            });
+
+        // remove empty elements
+        line = line.filter(l => l.trim() !== "");
+
+        // find objective function
+        let objectiveLineIndex = -1;
+        let objectiveType = null;
         for (let i = 0; i < line.length; i++) {
-            if (line[i] == "" || line[i] == " ") {
-                line.splice(i, 1)
-                i--
-            }
-        }
-        let objectiveLineIndex = -1; //Sets to not have been found
-        let objectiveType = null;//sets to no type
-        for (let i = 0; i < line.length; i++) {//loops through each element in array to find objective function
-            const l = line[i]
-            let testResult =l.toLowerCase().includes("max") || l.toLowerCase().includes("min")
-            if (testResult == true){
+            const l = line[i];
+            if (l.toLowerCase().includes("max")) {
                 objectiveLineIndex = i;
-                if (l.toLowerCase().includes("max")){
-                    objectiveType = "max";
-            }
-                else 
-                    objectiveType = "min"
+                objectiveType = "max";
+            } else if (l.toLowerCase().includes("min")) {
+                objectiveLineIndex = i;
+                objectiveType = "min";
             }
         }
+
         if (!objectiveType) {
             showError("Please specify min or max!");
+            return;
         }
-        if ((!(/\bp\b/i.test(line[objectiveLineIndex])))&&(!(/\bz\b/i.test(line[objectiveLineIndex])))&&(!(/\bf\b/i.test(line[objectiveLineIndex])))) {
+
+        const objLine = line[objectiveLineIndex];
+        if (!(/\bp\b/i.test(objLine) || /\bz\b/i.test(objLine) || /\bf\b/i.test(objLine))) {
             showError("Objective function does not include (F OR Z OR P)");
+            return;
         }
-        //console.log(line)
-           // console.log(objectiveLineIndex)
-           // console.log(objectiveType)
-        const constraintCandidates = []
-        for (let i = 0; i < line.length; i++){
-            const l =line[i];
-            if (i != objectiveLineIndex){
-                if (l.includes("=") || l.includes(">") || l.includes("<")){
-                    constraintCandidates.push(line[i]);
-                }
+
+        // collect constraint lines
+        const constraintCandidates = [];
+        for (let i = 0; i < line.length; i++) {
+            if (i !== objectiveLineIndex && (line[i].includes("=") || line[i].includes(">") || line[i].includes("<"))) {
+                constraintCandidates.push(line[i]);
             }
         }
-        console.log(constraintCandidates)
-        let objectiveExpr = line[objectiveLineIndex] || "";
-        objectiveExpr = ((((objectiveExpr.replace(/\b(max|min)\b\s*/i, "")).replace(/^z\s*[:=]\s*/i, "").replace(/^p\s*[:=]\s*/i, "")).replace(/^f\s*[:=]\s*/i, "")).replace(/^\s*:/, "")).trim()
-        console.log(objectiveExpr)
 
-        const maxVar = Math.max(
-        findMaxIndexFromLines([objectiveExpr]),
-        findMaxIndexFromLines(constraintCandidates)
-        ) || 0;
-        console.log(maxVar)
+        // clean objective expression
+        let objectiveExpr = objLine.replace(/\b(max|min)\b\s*/i, "")
+                                   .replace(/^z\s*[:=]\s*/i, "")
+                                   .replace(/^p\s*[:=]\s*/i, "")
+                                   .replace(/^f\s*[:=]\s*/i, "")
+                                   .replace(/^\s*:/, "")
+                                   .trim();
+        objectiveExpr = objectiveExpr.replace(/x(?!\d)/gi, "x1");
 
-const numVariables = maxVar;
-    })
-})
+        const maxVar = Math.max(findMaxIndexFromLines([objectiveExpr]), findMaxIndexFromLines(constraintCandidates)) || 0;
+
+        // build objective array
+        const objectiveArray = new Array(maxVar).fill(0);
+        const objTerms = parseTerms(objectiveExpr);
+        for (const t of objTerms) {
+            if (t.index >= 1 && t.index <= maxVar) objectiveArray[t.index - 1] = t.coeff;
+        }
+
+        // parse constraints
+        const constraints = [];
+        for (const rawLine of constraintCandidates) {
+            const match = rawLine.match(/(.*?)(<=|>=|=)(.*)/);
+            if (!match) continue;
+
+            let leftSide = match[1].trim();
+            let middle = match[2].trim();
+            let rightSide = match[3].trim();
+
+            // numeric RHS
+            const rightSideMatch = rightSide.match(/([+-]?\d*\.?\d+)/);
+            if (rightSideMatch) {
+                rightSide = parseFloat(rightSideMatch[1]);
+            } else {
+                rightSide = null;
+            }
+
+            // parse LHS coefficients
+            const leftSideTerms = parseTerms(leftSide);
+            const coeffRow = new Array(maxVar).fill(0);
+            for (const t of leftSideTerms) {
+                if (t.index >= 1 && t.index <= maxVar) coeffRow[t.index - 1] = t.coeff;
+            }
+
+            constraints.push({ coeffs: coeffRow, sign: middle, rhs: rightSide });
+        }
+
+        if (constraints.length === 0) {
+            showError("Error parsing constraints, please ensure constraints follow stated standard.");
+            return;
+        }
+
+        // pad or trim constraint arrays
+        for (const c of constraints) {
+            while (c.coeffs.length < maxVar) c.coeffs.push(0);
+            if (c.coeffs.length > maxVar) c.coeffs.length = maxVar;
+        }
+
+        // output
+        const parsed = {
+            type: objectiveType,
+            maxVar,
+            objective: objectiveArray,
+            constraints
+        };
+        output.style.color = "black";
+        output.textContent = JSON.stringify(parsed, null, 2);
+    });
+});
