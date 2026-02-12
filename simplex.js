@@ -79,13 +79,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         return maxI;
     }
-
+    var errorTrue = false
     function showError(msg) {
         output.style.color = "red";
         output.textContent = "❌ " + msg;
+        errorTrue = true
     }
     function removeError(){
         output.textContent =""
+        errorTrue = false
     }
     parseBtn.addEventListener("click", function () {
         removeError();
@@ -130,6 +132,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!objectiveType) {
             showError("Please specify min or max!");
         }
+        if ((!(/\bp\b/i.test(line[objectiveLineIndex])))&&(!(/\bz\b/i.test(line[objectiveLineIndex])))&&(!(/\bf\b/i.test(line[objectiveLineIndex])))) {
+            showError("Objective function does not include (F OR Z OR P)");
+        }
         //console.log(line)
            // console.log(objectiveLineIndex)
            // console.log(objectiveType)
@@ -144,9 +149,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         console.log(constraintCandidates)
         let objectiveExpr = line[objectiveLineIndex] || "";
-        objectiveExpr = (((objectiveExpr.replace(/\b(max|min)\b\s*/i, "")).replace(/^z\s*[:=]\s*/i, "")).replace(/^\s*:/, "")).trim
+        objectiveExpr = ((((objectiveExpr.replace(/\b(max|min)\b\s*/i, "")).replace(/^z\s*[:=]\s*/i, "").replace(/^p\s*[:=]\s*/i, "")).replace(/^f\s*[:=]\s*/i, "")).replace(/^\s*:/, "")).trim()
         console.log(objectiveExpr)
 
+        const maxVar = Math.max(
+        findMaxIndexFromLines([objectiveExpr]),
+        findMaxIndexFromLines(constraintCandidates)
+        ) || 0;
+        console.log(maxVar)
 
+const numVariables = maxVar;
     })
 })
