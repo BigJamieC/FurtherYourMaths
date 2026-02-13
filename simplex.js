@@ -137,12 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         // clean objective expression
-        let objectiveExpr = objLine.replace(/\b(max|min)\b\s*/i, "")
-                                   .replace(/^z\s*[:=]\s*/i, "")
-                                   .replace(/^p\s*[:=]\s*/i, "")
-                                   .replace(/^f\s*[:=]\s*/i, "")
-                                   .replace(/^\s*:/, "")
-                                   .trim();
+        let objectiveExpr = objLine.replace(/\b(max|min)\b\s*/i, "").replace(/^z\s*[:=]\s*/i, "").replace(/^p\s*[:=]\s*/i, "").replace(/^f\s*[:=]\s*/i, "").replace(/^\s*:/, "").trim();
         objectiveExpr = objectiveExpr.replace(/x(?!\d)/gi, "x1");
 
         const maxVar = Math.max(findMaxIndexFromLines([objectiveExpr]), findMaxIndexFromLines(constraintCandidates)) || 0;
@@ -161,6 +156,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!match) continue;
 
             let leftSide = match[1].trim();
+            leftSide = leftSide.replace(/x(?!\d)/gi, "x1");
             let middle = match[2].trim();
             let rightSide = match[3].trim();
 
@@ -176,31 +172,67 @@ document.addEventListener("DOMContentLoaded", () => {
             const leftSideTerms = parseTerms(leftSide);
             const coeffRow = new Array(maxVar).fill(0);
             for (const t of leftSideTerms) {
-                if (t.index >= 1 && t.index <= maxVar) coeffRow[t.index - 1] = t.coeff;
+                if ((t.index >= 1 && t.index) <= maxVar){
+                    coeffRow[t.index - 1] = t.coeff;
+                }
             }
 
             constraints.push({ coeffs: coeffRow, sign: middle, rhs: rightSide });
         }
 
-        if (constraints.length === 0) {
+        if (constraints.length == 0) {
             showError("Error parsing constraints, please ensure constraints follow stated standard.");
             return;
         }
 
         // pad or trim constraint arrays
-        for (const c of constraints) {
-            while (c.coeffs.length < maxVar) c.coeffs.push(0);
-            if (c.coeffs.length > maxVar) c.coeffs.length = maxVar;
+        for (const x of constraints) {
+            while (x.coeffs.length < maxVar){
+                x.coeffs.push(0)
+                if (x.coeffs.length > maxVar){
+                     x.coeffs.length = maxVar;
+                }
+            }
         }
 
-        // output
-        const parsed = {
-            type: objectiveType,
-            maxVar,
-            objective: objectiveArray,
-            constraints
+const namedObjective = [];
+for (let i = 0; i < objectiveArray.length; i++) {
+    const item = {
+        variable: "x" + (i + 1),
+        coeff: objectiveArray[i]
+    };
+    namedObjective.push(item);
+}
+
+const namedConstraints = [];
+
+for (let i = 0; i < constraints.length; i++) {
+
+    const oldConstraint = constraints[i];
+
+    const newConstraint = {
+        sign: oldConstraint.sign,
+        rhs: oldConstraint.rhs,
+        coeffs: []
+    };
+
+    for (let j = 0; j < oldConstraint.coeffs.length; j++) {
+        const coeffItem = {
+            variable: "x" + (j + 1),
+            coeff: oldConstraint.coeffs[j]
         };
-        output.style.color = "black";
-        output.textContent = JSON.stringify(parsed, null, 2);
+
+        newConstraint.coeffs.push(coeffItem);
+    }
+
+    namedConstraints.push(newConstraint);
+}
+
+const parsed = {"Objective Type": objectiveType,"Highest variable": maxVar,"Objective Function": namedObjective,"Constraints": namedConstraints
+};
+
+output.style.color = "black";
+output.textContent = JSON.stringify(parsed, null, 2);
+
     });
 });
