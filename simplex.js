@@ -198,6 +198,9 @@ function renderTableau(tableau, variableNames) {
         // parse constraints
         const constraints = [];
         for (const rawLine of constraintCandidates) {
+            if (/^x[\d,\s]*>=\s*0$/i.test(rawLine.replace(/\s+/g,""))) {
+            continue;
+            }
             const match = rawLine.match(/(.*?)(<=|>=|=)(.*)/);
             if (!match) continue;
 
