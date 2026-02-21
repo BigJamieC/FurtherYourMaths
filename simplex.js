@@ -213,6 +213,38 @@ function SimplexItterations(tableau) {
     }
     return currentTableau;
 }
+function displayResult(tableau, variableNames, objectiveType){
+    const output = document.getElementById("parsed-result");
+    const rhsIndex = tableau[0].length - 1;
+    const solution = {};
+    for (let col = 0; col < variableNames.length; col++){
+        let basicRow = -1;
+        let isBasic = true;
+        for (let i = 0; i < tableau.length - 1; i++){
+            if (Math.abs(tableau[i][col] - 1) < 1e-6){
+                if (basicRow === -1) basicRow = i;
+                else isBasic = false;
+            } else if (Math.abs(tableau[i][col]) > 1e-6){
+                isBasic = false;
+            }
+        }
+        if (isBasic && basicRow !== -1){
+            solution[variableNames[col]] = Number(tableau[basicRow][rhsIndex].toFixed(3));
+        } else {
+            solution[variableNames[col]] = 0;
+        }
+    }
+    const objectiveValue = Number(tableau[tableau.length - 1][rhsIndex].toFixed(3));
+    let resultText = "✅ Optimal Solution Found\n\n";
+    resultText += "Optimal Variable Values:\n";
+    for (let v in solution){
+        resultText += `${v} = ${solution[v]}\n`;
+    }
+    resultText += "\nObjective Value: " + objectiveValue;
+    resultText += "\nObjective Type: " + objectiveType.toUpperCase();
+    output.style.color = "black";
+    output.textContent = resultText;
+}
     parseBtn.addEventListener("click", function () {
         removeError();
         const rawInput = textarea.value;
@@ -360,6 +392,7 @@ for (let i = 0; i < artificialCount; i++) {
 }
 tableau = SimplexItterations(tableau);
 renderTableau(tableau, variableNames);
+displayResult(tableau, variableNames, parsed["Objective Type"]);
 //const pivotColumn = findPivotColumn(tableau);
 //const thetaColumn = findTheta(tableau, pivotColumn);
 //const pivotRow = thetaColumn ? findPivotRow(thetaColumn) : null;
