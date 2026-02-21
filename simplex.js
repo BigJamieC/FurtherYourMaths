@@ -39,10 +39,8 @@ document.addEventListener("DOMContentLoaded", () => {
         t = t.replace(/\bminimize\b/ig, "min");
         return t.trim();
     }
-
     // regex to parse terms like 3x1, -x2
     const termRegex = /([+-]?\s*(?:\d*\.?\d+)?\s*)x\s*(\d+)/gi;
-
     function parseTerms(expr) {
         let terms = [];
         termRegex.lastIndex = 0;
@@ -57,7 +55,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         return terms;
     }
-
     function findMaxIndexFromLines(lines) {
         let maxI = 0;
         for (let i = 0; i < lines.length; i++) {
@@ -70,7 +67,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         return maxI;
     }
-
     var errorTrue = false;
     function showError(msg) {
         output.style.color = "red";
@@ -81,32 +77,27 @@ document.addEventListener("DOMContentLoaded", () => {
         output.textContent = "";
         errorTrue = false;
     }
-function renderTableau(tableau, variableNames) {
-
+function renderTableau(tableau, variableNames, thetaColumn=null) {
     const container = document.getElementById("tableau-container");
     container.innerHTML = "";
-
     const table = document.createElement("table");
     table.classList.add("simplex-tableau");
-
     // Header row
     const headerRow = document.createElement("tr");
-
     for (let name of variableNames) {
         const th = document.createElement("th");
         th.textContent = name;
         headerRow.appendChild(th);
     }
-
-    const rhsHeader = document.createElement("th");
-    const thetaHeader = document.createElement("th");
-    rhsHeader.textContent = "RHS";
-    thetaHeader.textContent = "θ";
-    headerRow.appendChild(rhsHeader);
-    headerRow.appendChild(thetaHeader);
-
+const rhsHeader = document.createElement("th");
+rhsHeader.textContent = "RHS";
+headerRow.appendChild(rhsHeader);
+if (thetaColumn !== null) {
+    const th = document.createElement("th");
+    th.textContent = "θ";
+    headerRow.appendChild(th);
+}
     table.appendChild(headerRow);
-
     // Data rows
     for (let i = 0; i < tableau.length; i++) {
         const row = document.createElement("tr");
@@ -119,6 +110,13 @@ function renderTableau(tableau, variableNames) {
             }
             row.appendChild(td);
         }
+if (thetaColumn !== null && i < tableau.length - 1) {
+    const thetaCell = document.createElement("td");
+    const value = thetaColumn[i];
+    thetaCell.textContent = value === null ? "-" : Number(value.toFixed(3));
+    row.appendChild(thetaCell);
+}
+
         table.appendChild(row);
     }
     container.appendChild(table);
@@ -221,7 +219,6 @@ function renderTableau(tableau, variableNames) {
                 }
             }
         }
-
 const namedObjective = [];
 for (let i = 0; i < objectiveArray.length; i++) {
     const item = {
@@ -230,64 +227,47 @@ for (let i = 0; i < objectiveArray.length; i++) {
     };
     namedObjective.push(item);
 }
-
 const namedConstraints = [];
-
 for (let i = 0; i < constraints.length; i++) {
-
     const oldConstraint = constraints[i];
-
     const newConstraint = {
         sign: oldConstraint.sign,
         rhs: oldConstraint.rhs,
         coeffs: []
     };
-
     for (let j = 0; j < oldConstraint.coeffs.length; j++) {
         const coeffItem = {
             variable: "x" + (j + 1),
             coeff: oldConstraint.coeffs[j]
         };
-
         newConstraint.coeffs.push(coeffItem);
     }
-
     namedConstraints.push(newConstraint);
 }
-
 const parsed = {"Objective Type": objectiveType,"Highest variable": maxVar,"Objective Function": namedObjective,"Constraints": namedConstraints
 };
-
 output.style.color = "black";
 output.textContent = JSON.stringify(parsed, null, 2);
 const tableau = buildTableau(parsed);
-
 // build variable names
 const variableNames = [];
-
 for (let i = 0; i < parsed["Highest variable"]; i++) {
     variableNames.push("x" + (i + 1));
 }
-
 let slackCount = 0;
 let artificialCount = 0;
-
 for (let c of parsed.Constraints) {
     if (c.sign === "<=") slackCount++;
     if (c.sign === ">=" || c.sign === "=") artificialCount++;
 }
-
 for (let i = 0; i < slackCount; i++) {
     variableNames.push("s" + (i + 1));
 }
-
 for (let i = 0; i < artificialCount; i++) {
     variableNames.push("a" + (i + 1));
 }
-
 renderTableau(tableau, variableNames);
     });
-
     function buildTableau(parsed) {
         const constraints = parsed.Constraints;
         const maxVar=parsed["Highest variable"];
@@ -295,10 +275,8 @@ renderTableau(tableau, variableNames);
         const tableau=[];
         let slackIndex = 0;
         let artificialIndex = 0;
-
         const slackColumns = [];
         const artificialColumns = [];
-
         // assign column positions for slack/artificial variables
         for (let i = 0; i < constraints.length; i++) {
             const c = constraints[i];
@@ -308,38 +286,30 @@ renderTableau(tableau, variableNames);
                 artificialColumns.push(artificialIndex++);
             }
         }
-
         const totalSlack = slackColumns.length;
         const totalArtificial = artificialColumns.length;
-
         let slackCounter = 0;
         let artificialCounter = 0;
-
         for (let i = 0; i < constraints.length; i++) {
             const c = constraints[i];
             const row = [];
-
             for (let j = 0; j < maxVar; j++)
                 row.push(c.coeffs[j].coeff);
-
             // slack variables
             for (let j = 0; j < totalSlack; j++) row.push(0);
             if (c.sign == "<=") {
                 row[maxVar + slackCounter] = 1;
                 slackCounter++;
             }
-
             // artificial variables
             for (let j = 0; j < totalArtificial; j++) row.push(0);
             if (c.sign == ">=" || c.sign == "=") {
                 row[maxVar + totalSlack + artificialCounter] = 1;
                 artificialCounter++;
             }
-
             row.push(c.rhs);
             tableau.push(row);
         }
-
         // objective row
         const objRow=[];
         for (let j = 0; j < maxVar; j++) {
