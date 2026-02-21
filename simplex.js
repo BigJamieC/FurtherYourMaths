@@ -344,8 +344,16 @@ for (let i = 0; i < artificialCount; i++) {
 const pivotColumn = findPivotColumn(tableau);
 const thetaColumn = findTheta(tableau, pivotColumn);
 const pivotRow = thetaColumn ? findPivotRow(thetaColumn) : null;
-renderTableau(tableau,variableNames,thetaColumn,pivotColumn,pivotRow);
-tableau = RowDividedTheta(tableau, pivotRow, pivotColumn);
+if (pivotRow !== -1 && pivotRow !== null){
+    tableau = RowDividedTheta(tableau, pivotRow, pivotColumn);
+    tableau = eliminatePivotColumn(tableau, pivotRow, pivotColumn);
+}
+
+const newPivotColumn = findPivotColumn(tableau);
+const newTheta = findTheta(tableau, newPivotColumn);
+const newPivotRow = newTheta ? findPivotRow(newTheta) : null;
+
+renderTableau(tableau, variableNames, newTheta, newPivotColumn, newPivotRow);
     });
     function buildTableau(parsed) {
         const constraints = parsed.Constraints;
