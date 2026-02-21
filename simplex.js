@@ -116,7 +116,11 @@ if (thetaColumn !== null) {
 if (thetaColumn !== null && i < tableau.length - 1) {
     const thetaCell = document.createElement("td");
     const value = thetaColumn[i];
-    thetaCell.textContent = value === null ? "-" : Number(value.toFixed(3));
+    if (value === undefined || value === null) {
+    thetaCell.textContent = "-";
+} else {
+    thetaCell.textContent = Number(value).toFixed(3);
+}
     row.appendChild(thetaCell);
 }
 
