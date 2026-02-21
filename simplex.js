@@ -48,8 +48,8 @@ document.addEventListener("DOMContentLoaded", () => {
         while ((match = termRegex.exec(expr)) !== null) {
             let c = (match[1] || "").replace(/\s+/g, "");
             let idx = parseInt(match[2], 10);
-            if (c === "" || c == "+") c = "1";
-            if (c === "-" || c === " -") c = "-1";
+            if (c == "" || c == "+") c = "1";
+            if (c == "-" || c == " -") c = "-1";
             let coeff = parseFloat(c);
             terms.push({ index: idx, coeff: isNaN(coeff) ? 0 : coeff });
         }
@@ -170,6 +170,20 @@ function findPivotRow(thetaColumn){
         }
     }
     return pivotRow;
+}
+function RowDividedTheta(tableau, pivotRow, pivotColumn){
+    if (pivotRow == -1 || pivotColumn == -1){
+        return tableau;
+    }
+    const pivotValue = tableau[pivotRow][pivotColumn];
+    if (pivotValue == 0 || pivotValue == null || pivotValue == undefined){
+        return tableau;
+    }
+    const newTableau = JSON.parse(JSON.stringify(tableau));
+    for (let j = 0; j < newTableau[pivotRow].length; j++){
+        newTableau[pivotRow][j] = (newTableau[pivotRow][j] / pivotValue);
+    }
+    return newTableau;
 }
     parseBtn.addEventListener("click", function () {
         removeError();
@@ -319,7 +333,8 @@ for (let i = 0; i < artificialCount; i++) {
 const pivotColumn = findPivotColumn(tableau);
 const thetaColumn = findTheta(tableau, pivotColumn);
 const pivotRow = thetaColumn ? findPivotRow(thetaColumn) : null;
-renderTableau(tableau, variableNames, thetaColumn, pivotColumn, pivotRow);
+renderTableau(tableau,variableNames,thetaColumn,pivotColumn,pivotRow);
+tableau = RowDividedTheta(tableau, pivotRow, pivotColumn);
     });
     function buildTableau(parsed) {
         const constraints = parsed.Constraints;
@@ -375,5 +390,6 @@ renderTableau(tableau, variableNames, thetaColumn, pivotColumn, pivotRow);
         tableau.push(objRow);
 
         return tableau;
+        
     }
 });
