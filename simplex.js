@@ -141,22 +141,20 @@ function findPivotColumn(tableau) {
     return pivotCol;
 }
 function findTheta(tableau, pivotColumn){
-        if (pivotColumn === -1 || pivotColumn === null){
-            return null;
+    if (pivotColumn === -1 || pivotColumn === null){
+        return null;
+    }
+    const theta = [];
+    for (let i = 0; i < tableau.length - 1; i++) {
+        const pivotValue = tableau[i][pivotColumn];
+        const rhs = tableau[i][tableau[i].length - 1];
+        if (pivotValue > 0) {
+            theta.push(rhs / pivotValue);
+        } else {
+            theta.push(null);
         }
-        const theta = [];
-        const lastRowIndex = tableau.length - 1;
-        for (let i = 0; i < tableau.length - 1; i++) { //only itterates through the constraints as you dont find theta for objective function
-            const pivotValue = tableau[i][pivotColumn]; //This is the denominator of the theta value
-            const rhs = tableau[i][tableau[i].length - 1]; //This is the numerator of the theta value
-                if (pivotValue > 0) {
-                    theta.push(rhs / pivotValue);
-                }
-                else {
-                theta.push(null);
-                }
+    }
     return theta;
-        }
 }
     parseBtn.addEventListener("click", function () {
         removeError();
