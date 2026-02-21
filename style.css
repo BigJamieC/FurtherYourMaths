@@ -411,7 +411,11 @@ body.fade-out {
     border-radius: 8px;
     padding: 10px;
 }
-
+.pivot-column {
+    background-color: #fcca0081;
+    color: #000;
+    font-weight: bold;
+}
 body.dark-mode .simplex-text-container {
     background: rgba(40, 40, 40, 0.95);
     color: #e0e0e0;
@@ -421,7 +425,6 @@ body.dark-mode .symbol-btn {
     background-color: #64b5f6;
     color: #111;
 }
-
 body.dark-mode .symbol-btn:hover {
     background-color: #2196f3;
 }

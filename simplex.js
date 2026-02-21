@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
         output.textContent = "";
         errorTrue = false;
     }
-function renderTableau(tableau, variableNames, thetaColumn=null) {
+function renderTableau(tableau, variableNames, thetaColumn=null, pivotColumn=null) { //sets theta column and pivot to null ass they do not generate in first tableau
     const container = document.getElementById("tableau-container");
     container.innerHTML = "";
     const table = document.createElement("table");
@@ -108,6 +108,9 @@ if (thetaColumn !== null) {
             if (i == tableau.length - 1 && tableau[i][j] < 0) {
                 td.classList.add("negative");
             }
+            if (pivotColumn !== null && j === pivotColumn) {
+                td.classList.add("pivot-column");
+            }
             row.appendChild(td);
         }
 if (thetaColumn !== null && i < tableau.length - 1) {
@@ -120,6 +123,18 @@ if (thetaColumn !== null && i < tableau.length - 1) {
         table.appendChild(row);
     }
     container.appendChild(table);
+}
+function findPivotColumn(tableau) {
+    const objectiveRow = tableau[tableau.length - 1];
+    let pivotCol = -1;
+    let minValue = 0;
+    for (let j = 0; j < objectiveRow.length - 1; j++) {    // ignore RHS column
+        if (objectiveRow[j] < minValue) {
+            minValue = objectiveRow[j];
+            pivotCol = j;
+        }
+    }
+    return pivotCol;
 }
     parseBtn.addEventListener("click", function () {
         removeError();
@@ -266,7 +281,8 @@ for (let i = 0; i < slackCount; i++) {
 for (let i = 0; i < artificialCount; i++) {
     variableNames.push("a" + (i + 1));
 }
-renderTableau(tableau, variableNames);
+const pivotColumn = findPivotColumn(tableau);
+renderTableau(tableau, variableNames, null, pivotColumn);
     });
     function buildTableau(parsed) {
         const constraints = parsed.Constraints;
