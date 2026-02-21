@@ -1,4 +1,3 @@
-/* === Global Styles === */
 
 h1 {
     font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
@@ -12,17 +11,16 @@ h2 {
     color: #9924ff;
 }
 body {
-    background-color: #ffffff; /* same as content background in light mode */
+    background-color: #ffffff; 
     margin: 0;
     padding: 0;
     width: 100%;
     font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     position: relative;
     overflow-x: hidden;
-    color: #111; /* Improved text visibility */
+    color: #111; 
 }
 
-/* === Navigation Bar === */
 
 a {
     background-color: rgba(255, 255, 255, 0);
@@ -49,7 +47,7 @@ div.NavBar {
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
-/* Home button image */
+
 a.home img {
     width: 80px;   
     height: auto;    
@@ -73,7 +71,6 @@ a.home {
     right: 2.5px;
 }
 
-/* --- Theme Toggle Button --- */
 #theme-toggle {
     background: none;
     border: none;
@@ -89,12 +86,11 @@ a.home {
     color: #ffeb3b;
 }
 
-/* --- Smooth Transition for Theme Switch --- */
 body, .content, .NavBar, h1, p, a {
     transition: background-color 0.4s ease, color 0.4s ease;
 }
 
-/* === Math Tip Box === */
+
 .math-tip {
     position: fixed;
     top: 30%;
@@ -118,7 +114,7 @@ body, .content, .NavBar, h1, p, a {
     color: #650094;
 }
 
-/* Close button */
+
 .close-tip {
     position: absolute;
     top: 8px;
@@ -136,14 +132,11 @@ body, .content, .NavBar, h1, p, a {
     opacity: 1;
 }
 
-/* Hide animation */
 .math-tip.hidden {
     opacity: 0;
     transform: translateY(-10px);
     pointer-events: none;
 }
-
-/* === Main Content === */
 
 div.content {
     width: 100%;
@@ -175,8 +168,6 @@ div.content p {
     max-width: 800px;
     margin: 0 auto 20px auto;
 }
-
-/* === Dropdown List === */
 
 .feature-list {
     list-style-type: none;
@@ -229,13 +220,11 @@ div.content p {
     animation: fadeIn 0.3s ease;
 }
 
-/* Smooth fade animation */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-5px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* === CTA Text === */
 div.content .cta-text {
     margin-top: 30px;
     font-weight: bold;
@@ -243,7 +232,6 @@ div.content .cta-text {
     font-size: 18px;
 }
 
-/* === Dark Mode Styles === */
 body.dark-mode {
     background-color: #1e1e1e;
     color: #e0e0e0;
@@ -283,14 +271,12 @@ body.dark-mode summary {
     color: #e0e0e0;
 }
 
-/* Dark mode line color */
 body.dark-mode .line {
     border-left: 6px solid #e0e0e0;
     border-top: 30px solid #e0e0e0;
     border-bottom: 30px solid #e0e0e0;
 }
 
-/* Dark mode dropdowns */
 body.dark-mode .feature-list .dropdown {
     background: rgba(40, 40, 40, 0.95);
     color: #e0e0e0;
@@ -298,7 +284,6 @@ body.dark-mode .feature-list .dropdown {
     border-left: 3px solid #9924ff;
 }
 
-/* Dark mode math tip box */
 body.dark-mode .math-tip {
     background: rgba(40, 40, 40, 0.95);
     color: #e0e0e0;
@@ -316,19 +301,16 @@ body.dark-mode .close-tip {
 body.dark-mode .feature-list details summary:hover {
     background: rgba(193, 100, 246, 0.15);
 }
-/* Text box dark mode */
 body.dark-mode textarea {
     background: rgba(40, 40, 40, 0.95);
     color: #e0e0e0;
     box-shadow: 0 0 15px rgba(255,255,255,0.1);
 }
-/* Output box dark mode */
 body.dark-mode .output-box {
     background: rgba(40, 40, 40, 0.95);
     color: #e0e0e0;
     box-shadow: inset 0 0 10px rgba(255,255,255,0.1);
 }
-/* === Page Fade Animation === */
 body {
     opacity: 0;
     transition: opacity 0.3s ease;
@@ -342,8 +324,6 @@ body.fade-in {
 body.fade-out {
     opacity: 0;
 }
-
-/* === Simplex Text Input Styles === */
 
 .simplex-text-container {
     margin: 40px auto;
@@ -432,7 +412,6 @@ body.fade-out {
     padding: 10px;
 }
 
-/* --- Dark Mode Support for Simplex --- */
 body.dark-mode .simplex-text-container {
     background: rgba(40, 40, 40, 0.95);
     color: #e0e0e0;
@@ -463,7 +442,6 @@ body.dark-mode .output-box pre {
 body.dark-mode .home{
     filter: invert(1);
 }
-/* === Responsive === */
 @media (max-width: 900px) {
     .math-tip {
         display: none; 
@@ -480,4 +458,70 @@ body.dark-mode .home{
     div.content .tagline {
         font-size: 18px;
     }
+.tableau-wrapper {
+    overflow-x: auto;
+    margin-top: 20px;
+}
+
+.simplex-tableau {
+    border-collapse: collapse;
+    margin: 0 auto;
+    font-family: "Courier New", monospace;
+    font-size: 15px;
+    min-width: 500px;
+}
+
+.simplex-tableau th,
+.simplex-tableau td {
+    border: 1px solid #ccc;
+    padding: 8px 14px;
+    text-align: center;
+}
+
+.simplex-tableau th {
+    background: #004b94;
+    color: white;
+    font-weight: bold;
+}
+
+.simplex-tableau tr:last-child {
+    border-top: 3px solid #000;
+    font-weight: bold;
+}
+
+.simplex-tableau td.pivot {
+    background: #ffe082;
+    font-weight: bold;
+}
+
+.simplex-tableau td.negative {
+    color: #d32f2f;
+    font-weight: bold;
+}
+
+/* Dark Mode */
+body.dark-mode .simplex-tableau th {
+    background: #64b5f6;
+    color: #111;
+}
+
+body.dark-mode .simplex-tableau td {
+    border: 1px solid #555;
+}
+
+body.dark-mode .simplex-tableau tr:last-child {
+    border-top: 3px solid #aaa;
+}
+
+body.dark-mode .simplex-tableau td.pivot {
+    background: #ffca28;
+}
+
+body.dark-mode .simplex-tableau td.negative {
+    color: #ff6b6b;
+}
+.simplex-tableau {
+    border-left: 4px solid #000;
+    border-right: 4px solid #000;
+}
 }

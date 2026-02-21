@@ -81,6 +81,52 @@ document.addEventListener("DOMContentLoaded", () => {
         output.textContent = "";
         errorTrue = false;
     }
+function renderTableau(tableau, variableNames) {
+
+    const container = document.getElementById("tableau-container");
+    container.innerHTML = "";
+
+    const table = document.createElement("table");
+    table.classList.add("simplex-tableau");
+
+    // Header row
+    const headerRow = document.createElement("tr");
+
+    for (let name of variableNames) {
+        const th = document.createElement("th");
+        th.textContent = name;
+        headerRow.appendChild(th);
+    }
+
+    const rhsHeader = document.createElement("th");
+    rhsHeader.textContent = "RHS";
+    headerRow.appendChild(rhsHeader);
+
+    table.appendChild(headerRow);
+
+    // Data rows
+    for (let i = 0; i < tableau.length; i++) {
+
+        const row = document.createElement("tr");
+
+        for (let j = 0; j < tableau[i].length; j++) {
+
+            const td = document.createElement("td");
+            td.textContent = Number(tableau[i][j].toFixed(3));
+
+            // Highlight negative values in objective row
+            if (i == tableau.length - 1 && tableau[i][j] < 0) {
+                td.classList.add("negative");
+            }
+
+            row.appendChild(td);
+        }
+
+        table.appendChild(row);
+    }
+
+    container.appendChild(table);
+}
 
     parseBtn.addEventListener("click", function () {
         removeError();
@@ -172,7 +218,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const leftSideTerms = parseTerms(leftSide);
             const coeffRow = new Array(maxVar).fill(0);
             for (const t of leftSideTerms) {
-                if ((t.index >= 1 && t.index) <= maxVar){
+                if (t.index >= 1 && t.index <= maxVar) {
                     coeffRow[t.index - 1] = t.coeff;
                 }
             }
@@ -233,6 +279,97 @@ const parsed = {"Objective Type": objectiveType,"Highest variable": maxVar,"Obje
 
 output.style.color = "black";
 output.textContent = JSON.stringify(parsed, null, 2);
+const tableau = buildTableau(parsed);
 
+// build variable names
+const variableNames = [];
+
+for (let i = 0; i < parsed["Highest variable"]; i++) {
+    variableNames.push("x" + (i + 1));
+}
+
+let slackCount = 0;
+let artificialCount = 0;
+
+for (let c of parsed.Constraints) {
+    if (c.sign === "<=") slackCount++;
+    if (c.sign === ">=" || c.sign === "=") artificialCount++;
+}
+
+for (let i = 0; i < slackCount; i++) {
+    variableNames.push("s" + (i + 1));
+}
+
+for (let i = 0; i < artificialCount; i++) {
+    variableNames.push("a" + (i + 1));
+}
+
+renderTableau(tableau, variableNames);
     });
+
+    function buildTableau(parsed) {
+        const constraints = parsed.Constraints;
+        const maxVar=parsed["Highest variable"];
+        const objectiveType=parsed["Objective Type"];
+        const tableau=[];
+        let slackIndex = 0;
+        let artificialIndex = 0;
+
+        const slackColumns = [];
+        const artificialColumns = [];
+
+        // assign column positions for slack/artificial variables
+        for (let i = 0; i < constraints.length; i++) {
+            const c = constraints[i];
+            if (c.sign == "<=") {
+                slackColumns.push(slackIndex++);
+            } else if (c.sign == ">=" || c.sign == "=") {
+                artificialColumns.push(artificialIndex++);
+            }
+        }
+
+        const totalSlack = slackColumns.length;
+        const totalArtificial = artificialColumns.length;
+
+        let slackCounter = 0;
+        let artificialCounter = 0;
+
+        for (let i = 0; i < constraints.length; i++) {
+            const c = constraints[i];
+            const row = [];
+
+            for (let j = 0; j < maxVar; j++)
+                row.push(c.coeffs[j].coeff);
+
+            // slack variables
+            for (let j = 0; j < totalSlack; j++) row.push(0);
+            if (c.sign == "<=") {
+                row[maxVar + slackCounter] = 1;
+                slackCounter++;
+            }
+
+            // artificial variables
+            for (let j = 0; j < totalArtificial; j++) row.push(0);
+            if (c.sign == ">=" || c.sign == "=") {
+                row[maxVar + totalSlack + artificialCounter] = 1;
+                artificialCounter++;
+            }
+
+            row.push(c.rhs);
+            tableau.push(row);
+        }
+
+        // objective row
+        const objRow=[];
+        for (let j = 0; j < maxVar; j++) {
+            let value = parsed["Objective Function"][j].coeff;
+            if (objectiveType == "max") value=-value;
+            objRow.push(value)
+        }
+        for (let j = 0; j < totalSlack + totalArtificial; j++) objRow.push(0);
+        objRow.push(0);
+        tableau.push(objRow);
+
+        return tableau;
+    }
 });
