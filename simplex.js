@@ -1,11 +1,9 @@
 // wait till the page is loaded, otherwise elements might not exist
 document.addEventListener("DOMContentLoaded", () => {
-
     // grab main elements from the page
     const textarea = document.getElementById("lp-input"); // user input box
     const parseBtn = document.getElementById("parse-problem"); // parse button
     const output = document.getElementById("parsed-result"); // where we will show the result
-
     // symbol buttons
     const symbolButtons = document.querySelectorAll(".symbol-btn");
     for (let i = 0; i < symbolButtons.length; i++) {
@@ -21,7 +19,6 @@ document.addEventListener("DOMContentLoaded", () => {
             textarea.selectionStart = textarea.selectionEnd = start + sym.length;
         });
     }
-
     // helper to clean up input text
     function normalizeRaw(raw) {
         let t = raw;
@@ -185,6 +182,20 @@ function RowDividedTheta(tableau, pivotRow, pivotColumn){
     }
     return newTableau;
 }
+function eliminatePivotColumn(tableau, pivotRow, pivotColumn){
+    if (pivotRow == -1 || pivotColumn == -1) {return tableau;}
+    const newTableau = JSON.parse(JSON.stringify(tableau));
+    const pivotValue = newTableau[pivotRow][pivotColumn];
+    for (let i = 0; i < newTableau.length; i++){
+        if (i == pivotRow) continue;
+        const factor = newTableau[i][pivotColumn];
+        if (factor == 0) continue;
+        for (let j = 0; j < newTableau[i].length; j++){
+            newTableau[i][j] -= factor * newTableau[pivotRow][j];
+        }
+    }
+    return newTableau;
+}
     parseBtn.addEventListener("click", function () {
         removeError();
         const rawInput = textarea.value;
@@ -312,7 +323,7 @@ const parsed = {"Objective Type": objectiveType,"Highest variable": maxVar,"Obje
 };
 output.style.color = "black";
 output.textContent = JSON.stringify(parsed, null, 2);
-const tableau = buildTableau(parsed);
+let tableau = buildTableau(parsed);
 // build variable names
 const variableNames = [];
 for (let i = 0; i < parsed["Highest variable"]; i++) {
