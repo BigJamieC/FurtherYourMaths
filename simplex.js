@@ -99,45 +99,38 @@ function renderTableau(tableau, variableNames) {
     }
 
     const rhsHeader = document.createElement("th");
+    const thetaHeader = document.createElement("th");
     rhsHeader.textContent = "RHS";
+    thetaHeader.textContent = "θ";
     headerRow.appendChild(rhsHeader);
+    headerRow.appendChild(thetaHeader);
 
     table.appendChild(headerRow);
 
     // Data rows
     for (let i = 0; i < tableau.length; i++) {
-
         const row = document.createElement("tr");
-
         for (let j = 0; j < tableau[i].length; j++) {
-
             const td = document.createElement("td");
             td.textContent = Number(tableau[i][j].toFixed(3));
-
             // Highlight negative values in objective row
             if (i == tableau.length - 1 && tableau[i][j] < 0) {
                 td.classList.add("negative");
             }
-
             row.appendChild(td);
         }
-
         table.appendChild(row);
     }
-
     container.appendChild(table);
 }
-
     parseBtn.addEventListener("click", function () {
         removeError();
-
         const rawInput = textarea.value;
         const input = normalizeRaw(rawInput);
         if (input.length === 0 || !rawInput) {
             showError("Input is empty!");
             return;
         }
-
         const normalised = normalizeRaw(rawInput);
         let line = normalised.split(/[\n,]+/).map(e => e.trim())
             .flatMap(l => {
@@ -145,10 +138,8 @@ function renderTableau(tableau, variableNames) {
                     /Subject to:|Subject To:|Subject To|ST:|S\.T\.|s\.t\.|Where|Such that|With|Conditions:|Conditions|Limits:|Limits|Restrictions:|Restrictions|Constraints:|Constraints|constraint:|The:|The|the:|the|constraint/i
                 );
             });
-
         // remove empty elements
         line = line.filter(l => l.trim() !== "");
-
         // find objective function
         let objectiveLineIndex = -1;
         let objectiveType = null;
@@ -162,18 +153,15 @@ function renderTableau(tableau, variableNames) {
                 objectiveType = "min";
             }
         }
-
         if (!objectiveType) {
             showError("Please specify min or max!");
             return;
         }
-
         const objLine = line[objectiveLineIndex];
         if (!(/\bp\b/i.test(objLine) || /\bz\b/i.test(objLine) || /\bf\b/i.test(objLine))) {
             showError("Objective function does not include (F OR Z OR P)");
             return;
         }
-
         // collect constraint lines
         const constraintCandidates = [];
         for (let i = 0; i < line.length; i++) {
@@ -181,20 +169,16 @@ function renderTableau(tableau, variableNames) {
                 constraintCandidates.push(line[i]);
             }
         }
-
         // clean objective expression
         let objectiveExpr = objLine.replace(/\b(max|min)\b\s*/i, "").replace(/^z\s*[:=]\s*/i, "").replace(/^p\s*[:=]\s*/i, "").replace(/^f\s*[:=]\s*/i, "").replace(/^\s*:/, "").trim();
         objectiveExpr = objectiveExpr.replace(/x(?!\d)/gi, "x1");
-
         const maxVar = Math.max(findMaxIndexFromLines([objectiveExpr]), findMaxIndexFromLines(constraintCandidates)) || 0;
-
         // build objective array
         const objectiveArray = new Array(maxVar).fill(0);
         const objTerms = parseTerms(objectiveExpr);
         for (const t of objTerms) {
             if (t.index >= 1 && t.index <= maxVar) objectiveArray[t.index - 1] = t.coeff;
         }
-
         // parse constraints
         const constraints = [];
         for (const rawLine of constraintCandidates) {
@@ -203,12 +187,10 @@ function renderTableau(tableau, variableNames) {
             }
             const match = rawLine.match(/(.*?)(<=|>=|=)(.*)/);
             if (!match) continue;
-
             let leftSide = match[1].trim();
             leftSide = leftSide.replace(/x(?!\d)/gi, "x1");
             let middle = match[2].trim();
             let rightSide = match[3].trim();
-
             // numeric RHS
             const rightSideMatch = rightSide.match(/([+-]?\d*\.?\d+)/);
             if (rightSideMatch) {
@@ -216,7 +198,6 @@ function renderTableau(tableau, variableNames) {
             } else {
                 rightSide = null;
             }
-
             // parse LHS coefficients
             const leftSideTerms = parseTerms(leftSide);
             const coeffRow = new Array(maxVar).fill(0);
@@ -225,15 +206,12 @@ function renderTableau(tableau, variableNames) {
                     coeffRow[t.index - 1] = t.coeff;
                 }
             }
-
             constraints.push({ coeffs: coeffRow, sign: middle, rhs: rightSide });
         }
-
         if (constraints.length == 0) {
             showError("Error parsing constraints, please ensure constraints follow stated standard.");
             return;
         }
-
         // pad or trim constraint arrays
         for (const x of constraints) {
             while (x.coeffs.length < maxVar){
