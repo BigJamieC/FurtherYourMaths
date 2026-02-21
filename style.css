@@ -416,6 +416,11 @@ body.fade-out {
     color: #000;
     font-weight: bold;
 }
+.pivot-row {
+    background: #fcca0081;
+    color: #000;
+    font-weight: bold;
+}
 body.dark-mode .simplex-text-container {
     background: rgba(40, 40, 40, 0.95);
     color: #e0e0e0;

@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
         output.textContent = "";
         errorTrue = false;
     }
-function renderTableau(tableau, variableNames, thetaColumn=null, pivotColumn=null) { //sets theta column and pivot to null as they do not generate in first tableau
+function renderTableau(tableau, variableNames, thetaColumn=null, pivotColumn=null, pivotRow=null) { //sets theta column and pivots to null as they do not generate in first tableau
     const container = document.getElementById("tableau-container");
     container.innerHTML = "";
     const table = document.createElement("table");
@@ -101,6 +101,9 @@ if (thetaColumn !== null) {
     // Data rows
     for (let i = 0; i < tableau.length; i++) {
         const row = document.createElement("tr");
+        if (pivotRow !== null && i === pivotRow){
+            row.classList.add("pivot-row");
+        }
         for (let j = 0; j < tableau[i].length; j++) {
             const td = document.createElement("td");
             td.textContent = Number(tableau[i][j].toFixed(3));
@@ -155,6 +158,18 @@ function findTheta(tableau, pivotColumn){
         }
     }
     return theta;
+}
+function findPivotRow(thetaColumn){
+    let min = Infinity;
+    let pivotRow = -1;
+    for (let i = 0; i < thetaColumn.length; i++){
+        const value = thetaColumn[i];
+        if (value !== null && value > 0 && value < min){
+            min = value;
+            pivotRow = i;
+        }
+    }
+    return pivotRow;
 }
     parseBtn.addEventListener("click", function () {
         removeError();
@@ -303,7 +318,8 @@ for (let i = 0; i < artificialCount; i++) {
 }
 const pivotColumn = findPivotColumn(tableau);
 const thetaColumn = findTheta(tableau, pivotColumn);
-renderTableau(tableau, variableNames, thetaColumn, pivotColumn);
+const pivotRow = thetaColumn ? findPivotRow(thetaColumn) : null;
+renderTableau(tableau, variableNames, thetaColumn, pivotColumn, pivotRow);
     });
     function buildTableau(parsed) {
         const constraints = parsed.Constraints;
