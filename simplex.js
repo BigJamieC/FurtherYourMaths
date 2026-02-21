@@ -183,7 +183,7 @@ function RowDividedTheta(tableau, pivotRow, pivotColumn){
     return newTableau;
 }
 function eliminatePivotColumn(tableau, pivotRow, pivotColumn){
-    if (pivotRow == -1 || pivotColumn == -1) {return tableau;}
+    if (pivotRow == -1 || pivotColumn == -1) return tableau;
     const newTableau = JSON.parse(JSON.stringify(tableau));
     const pivotValue = newTableau[pivotRow][pivotColumn];
     for (let i = 0; i < newTableau.length; i++){
@@ -195,6 +195,23 @@ function eliminatePivotColumn(tableau, pivotRow, pivotColumn){
         }
     }
     return newTableau;
+}
+function SimplexItterations(tableau) {
+    let currentTableau = JSON.parse(JSON.stringify(tableau));
+    const maxIterations = 1000;
+    for (let iteration = 0; iteration < maxIterations; iteration++) {
+        const pivotColumn = findPivotColumn(currentTableau);
+        if (pivotColumn === -1) break;
+        const thetaColumn = findTheta(currentTableau, pivotColumn);
+        const pivotRow = findPivotRow(thetaColumn);
+        if (pivotRow === -1) {
+            showError("Unbounded solution detected");
+            return currentTableau;
+        }
+        currentTableau = RowDividedTheta(currentTableau, pivotRow, pivotColumn);
+        currentTableau = eliminatePivotColumn(currentTableau, pivotRow, pivotColumn);
+    }
+    return currentTableau;
 }
     parseBtn.addEventListener("click", function () {
         removeError();
@@ -341,19 +358,21 @@ for (let i = 0; i < slackCount; i++) {
 for (let i = 0; i < artificialCount; i++) {
     variableNames.push("a" + (i + 1));
 }
-const pivotColumn = findPivotColumn(tableau);
-const thetaColumn = findTheta(tableau, pivotColumn);
-const pivotRow = thetaColumn ? findPivotRow(thetaColumn) : null;
-if (pivotRow !== -1 && pivotRow !== null){
-    tableau = RowDividedTheta(tableau, pivotRow, pivotColumn);
-    tableau = eliminatePivotColumn(tableau, pivotRow, pivotColumn);
-}
-
-const newPivotColumn = findPivotColumn(tableau);
-const newTheta = findTheta(tableau, newPivotColumn);
-const newPivotRow = newTheta ? findPivotRow(newTheta) : null;
-
-renderTableau(tableau, variableNames, newTheta, newPivotColumn, newPivotRow);
+tableau = SimplexItterations(tableau);
+renderTableau(tableau, variableNames);
+//const pivotColumn = findPivotColumn(tableau);
+//const thetaColumn = findTheta(tableau, pivotColumn);
+//const pivotRow = thetaColumn ? findPivotRow(thetaColumn) : null;
+//if (pivotRow !== -1 && pivotRow !== null){
+//    tableau = RowDividedTheta(tableau, pivotRow, pivotColumn);
+//    tableau = eliminatePivotColumn(tableau, pivotRow, pivotColumn);
+//}
+//
+//const newPivotColumn = findPivotColumn(tableau);
+//const newTheta = findTheta(tableau, newPivotColumn);
+//const newPivotRow = newTheta ? findPivotRow(newTheta) : null;
+//
+//renderTableau(tableau, variableNames, newTheta, newPivotColumn, newPivotRow);
     });
     function buildTableau(parsed) {
         const constraints = parsed.Constraints;
