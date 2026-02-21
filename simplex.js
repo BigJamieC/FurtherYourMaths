@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
         output.textContent = "";
         errorTrue = false;
     }
-function renderTableau(tableau, variableNames, thetaColumn=null, pivotColumn=null) { //sets theta column and pivot to null ass they do not generate in first tableau
+function renderTableau(tableau, variableNames, thetaColumn=null, pivotColumn=null) { //sets theta column and pivot to null as they do not generate in first tableau
     const container = document.getElementById("tableau-container");
     container.innerHTML = "";
     const table = document.createElement("table");
@@ -135,6 +135,24 @@ function findPivotColumn(tableau) {
         }
     }
     return pivotCol;
+}
+function findTheta(tableau, pivotColumn){
+        if (pivotColumn === -1 || pivotColumn === null){
+            return null;
+        }
+        const theta = [];
+        const lastRowIndex = tableau.length - 1;
+        for (let i = 0; i < tableau.length - 1; i++) { //only itterates through the constraints as you dont find theta for objective function
+            const pivotValue = tableau[i][pivotColumn]; //This is the denominator of the theta value
+            const rhs = tableau[i][tableau[i].length - 1]; //This is the numerator of the theta value
+                if (pivotValue > 0) {
+                    theta.push(rhs / pivotValue);
+                }
+                else {
+                theta.push(null);
+                }
+    return theta;
+        }
 }
     parseBtn.addEventListener("click", function () {
         removeError();
@@ -282,7 +300,8 @@ for (let i = 0; i < artificialCount; i++) {
     variableNames.push("a" + (i + 1));
 }
 const pivotColumn = findPivotColumn(tableau);
-renderTableau(tableau, variableNames, null, pivotColumn);
+const thetaColumn = findTheta(tableau, pivotColumn);
+renderTableau(tableau, variableNames, thetaColumn, pivotColumn);
     });
     function buildTableau(parsed) {
         const constraints = parsed.Constraints;
