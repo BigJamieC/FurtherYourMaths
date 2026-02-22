@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 function renderTableau(tableau, variableNames, thetaColumn=null, pivotColumn=null, pivotRow=null) { //sets theta column and pivots to null as they do not generate in first tableau
     const container = document.getElementById("tableau-container");
-    container.innerHTML = "";
+    //container.innerHTML = "";
     const table = document.createElement("table");
     table.classList.add("simplex-tableau");
     // Header row
@@ -198,20 +198,36 @@ function eliminatePivotColumn(tableau, pivotRow, pivotColumn){
 }
 function SimplexItterations(tableau) {
     let currentTableau = JSON.parse(JSON.stringify(tableau));
-    const maxIterations = 1000;
-    for (let iteration = 0; iteration < maxIterations; iteration++) {
+    const steps = [];
+
+    const maxItterations = 100;
+    for (let itteration = 0; itteration < maxItterations; itteration++) {
+
         const pivotColumn = findPivotColumn(currentTableau);
-        if (pivotColumn === -1) break;
+
+        // store current state before stopping
         const thetaColumn = findTheta(currentTableau, pivotColumn);
-        const pivotRow = findPivotRow(thetaColumn);
-        if (pivotRow === -1) {
+        const pivotRow = thetaColumn ? findPivotRow(thetaColumn) : null;
+
+        steps.push({
+            tableau: JSON.parse(JSON.stringify(currentTableau)),
+            pivotColumn: pivotColumn,
+            pivotRow: pivotRow,
+            theta: thetaColumn
+        });
+
+        if (pivotColumn === -1) break;
+
+        if (pivotRow === -1 || pivotRow === null) {
             showError("Unbounded solution detected");
-            return currentTableau;
+            break;
         }
+
         currentTableau = RowDividedTheta(currentTableau, pivotRow, pivotColumn);
         currentTableau = eliminatePivotColumn(currentTableau, pivotRow, pivotColumn);
     }
-    return currentTableau;
+
+    return steps;
 }
 function displayResult(tableau, variableNames, objectiveType){
     const output = document.getElementById("parsed-result");
@@ -390,9 +406,28 @@ for (let i = 0; i < slackCount; i++) {
 for (let i = 0; i < artificialCount; i++) {
     variableNames.push("a" + (i + 1));
 }
-tableau = SimplexItterations(tableau);
-renderTableau(tableau, variableNames);
-displayResult(tableau, variableNames, parsed["Objective Type"]);
+const steps = SimplexItterations(tableau);
+
+const container = document.getElementById("tableau-container");
+container.innerHTML = "";
+
+for (let i = 0; i < steps.length; i++) {
+    const stepTitle = document.createElement("h3");
+    stepTitle.textContent = "Itteration " + i;
+    container.appendChild(stepTitle);
+
+    renderTableau(
+        steps[i].tableau,
+        variableNames,
+        steps[i].theta,
+        steps[i].pivotColumn,
+        steps[i].pivotRow
+    );
+}
+
+// final tableau is last step
+const finalTableau = steps[steps.length - 1].tableau;
+displayResult(finalTableau, variableNames, parsed["Objective Type"]);
 //const pivotColumn = findPivotColumn(tableau);
 //const thetaColumn = findTheta(tableau, pivotColumn);
 //const pivotRow = thetaColumn ? findPivotRow(thetaColumn) : null;
