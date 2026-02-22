@@ -196,32 +196,102 @@ function eliminatePivotColumn(tableau, pivotRow, pivotColumn){
     }
     return newTableau;
 }
-function SimplexItterations(tableau) {
+function SimplexItterations(tableau, variableNames) {
+
     let currentTableau = JSON.parse(JSON.stringify(tableau));
     const steps = [];
+    const maxIterations = 100;
 
-    const maxItterations = 100;
-    for (let itteration = 0; itteration < maxItterations; itteration++) {
+    for (let iteration = 0; iteration < maxIterations; iteration++) {
 
         const pivotColumn = findPivotColumn(currentTableau);
+        const lastRow = currentTableau[currentTableau.length - 1];
 
-        // store current state before stopping
+        let explanation = "";
+
+        // 🔹 If optimal
+        if (pivotColumn == -1) {
+
+            explanation += "All values in the objective row are ≥ 0.\n";
+            explanation += "No entering variable improves the objective function.\n";
+            explanation += "Therefore the current solution is optimal.";
+
+            steps.push({
+                tableau: JSON.parse(JSON.stringify(currentTableau)),
+                pivotColumn: -1,
+                pivotRow: -1,
+                theta: null,
+                explanation
+            });
+
+            break;
+        }
+
+        const enteringVar = variableNames[pivotColumn];
+        const enteringValue = lastRow[pivotColumn];
+
+        explanation += 
+            "The most negative value in the objective row is " 
+            + enteringValue.toFixed(2) 
+            + " in column " + enteringVar + ".\n";
+
+        explanation += 
+            enteringVar + " enters the basis because increasing it will increase the objective value.\n\n";
+
+        // 🔹 Theta values
         const thetaColumn = findTheta(currentTableau, pivotColumn);
-        const pivotRow = thetaColumn ? findPivotRow(thetaColumn) : null;
+
+        explanation += "Theta values (RHS ÷ pivot column):\n";
+
+        for (let i = 0; i < thetaColumn.length; i++) {
+            if (thetaColumn[i] == null) {
+                explanation += "Row " + (i+1) + ": not valid (division by ≤ 0)\n";
+            } else {
+                explanation += 
+                    "Row " + (i+1) + ": " 
+                    + thetaColumn[i].toFixed(2) + "\n";
+            }
+        }
+
+        const pivotRow = findPivotRow(thetaColumn);
+
+        if (pivotRow === -1 || pivotRow === null) {
+            explanation += "\nNo valid theta values. The problem is unbounded.";
+        } else {
+
+            explanation += 
+                "\nSmallest positive theta is " 
+                + thetaColumn[pivotRow].toFixed(2) 
+                + " in Row " + (pivotRow + 1) + ".\n";
+
+            explanation += 
+                "Row " + (pivotRow + 1) 
+                + " leaves the basis.\n\n";
+
+            const pivotElement = currentTableau[pivotRow][pivotColumn];
+
+            explanation += 
+                "Pivot element is " 
+                + pivotElement.toFixed(2) + ".\n";
+
+            explanation += 
+                "Divide the pivot row by " 
+                + pivotElement.toFixed(2) 
+                + " to make it 1.\n";
+
+            explanation += 
+                "Then eliminate the pivot column from all other rows.";
+        }
 
         steps.push({
             tableau: JSON.parse(JSON.stringify(currentTableau)),
-            pivotColumn: pivotColumn,
-            pivotRow: pivotRow,
-            theta: thetaColumn
+            pivotColumn,
+            pivotRow,
+            theta: thetaColumn,
+            explanation
         });
 
-        if (pivotColumn === -1) break;
-
-        if (pivotRow === -1 || pivotRow === null) {
-            showError("Unbounded solution detected");
-            break;
-        }
+        if (pivotRow == -1 || pivotRow == null) break;
 
         currentTableau = RowDividedTheta(currentTableau, pivotRow, pivotColumn);
         currentTableau = eliminatePivotColumn(currentTableau, pivotRow, pivotColumn);
@@ -406,14 +476,15 @@ for (let i = 0; i < slackCount; i++) {
 for (let i = 0; i < artificialCount; i++) {
     variableNames.push("a" + (i + 1));
 }
-const steps = SimplexItterations(tableau);
+const steps = SimplexItterations(tableau, variableNames);
 
 const container = document.getElementById("tableau-container");
 container.innerHTML = "";
 
 for (let i = 0; i < steps.length; i++) {
+
     const stepTitle = document.createElement("h3");
-    stepTitle.textContent = "Itteration " + i;
+    stepTitle.textContent = "Iteration " + i;
     container.appendChild(stepTitle);
 
     renderTableau(
@@ -423,6 +494,17 @@ for (let i = 0; i < steps.length; i++) {
         steps[i].pivotColumn,
         steps[i].pivotRow
     );
+
+    // ✅ Explanation rendering (THIS WAS MISSING)
+    if (steps[i].explanation) {
+        const explanationBox = document.createElement("div");
+        explanationBox.className = "step-explanation";
+        explanationBox.style.whiteSpace = "pre-line";
+        explanationBox.style.marginBottom = "25px";
+        explanationBox.textContent = steps[i].explanation;
+
+        container.appendChild(explanationBox);
+    }
 }
 
 // final tableau is last step

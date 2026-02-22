@@ -466,6 +466,7 @@ body.dark-mode .home{
     div.content .tagline {
         font-size: 18px;
     }
+}
 .tableau-wrapper {
     overflow-x: auto;
     margin-top: 20px;
@@ -531,5 +532,4 @@ body.dark-mode .simplex-tableau td.negative {
 .simplex-tableau {
     border-left: 4px solid #000;
     border-right: 4px solid #000;
-}
 }
