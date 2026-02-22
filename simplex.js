@@ -328,7 +328,6 @@ function displayResult(tableau, variableNames, objectiveType){
     }
     resultText += "\nObjective Value: " + objectiveValue;
     resultText += "\nObjective Type: " + objectiveType.toUpperCase();
-    output.style.color = "black";
     output.textContent = resultText;
 }
     parseBtn.addEventListener("click", function () {
@@ -456,7 +455,6 @@ for (let i = 0; i < constraints.length; i++) {
 }
 const parsed = {"Objective Type": objectiveType,"Highest variable": maxVar,"Objective Function": namedObjective,"Constraints": namedConstraints
 };
-output.style.color = "black";
 output.textContent = JSON.stringify(parsed, null, 2);
 let tableau = buildTableau(parsed);
 // build variable names
