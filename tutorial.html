@@ -23,18 +23,41 @@
         </a>
         <button id="theme-toggle" aria-label="Toggle dark mode">🌙</button>
     </div>
+    <div class="content">
+        <h1>Tutorial</h1>
+<h2>Simplex Algorithm Solver (Text Input)</h2>
+<p>Type or paste your linear programming problem below:</p>
+<p>Ensure that the objective function is set such that Z, P or F is the subject of the equation</p>
+<p>Ensure that constraint variables use x1, x2 x3...</p>
+
+<div class="simplex-text-container">
+    <div class="symbol-buttons">
+        <button type="button" class="symbol-btn" data-symbol="≤">≤</button>
+        <button type="button" class="symbol-btn" data-symbol="≥">≥</button>
+        <button type="button" class="symbol-btn" data-symbol="=">=</button>
+    </div>
+
+    <textarea id="lp-input" placeholder="e.g.&#10;Max Z = 3x1 + 5x2&#10;2x1 + 3x2 ≤ 8&#10;x1 + x2 ≥ 4&#10;x1, x2 ≥ 0"></textarea>
+
+    <div class="input-actions">
+        <button id="parse-problem" class="primary-btn">Parse Problem</button>
+    </div>
+
+    <div id="parsed-output" class="output-box">
+        <h3>Answer:</h3>
+        <pre id="parsed-result">Awaiting input...</pre>
+    </div>
+   <div class="tableau-box">
+    <div id="tableau-container"></div>
+</div>
 
     <div class="math-tip">
         <button class="close-tip">&times;</button>
         <h3>💡 Math Tip</h3>
         <p>Loading tip...</p>
     </div>
-
-    <div class="content">
-        <h1>Tutorial</h1>
-        <p>Step-by-step lessons to help you understand key mathematical topics.</p>
+    <script src="simplex.js"></script>
     </div>
-
     <script src="main.js"></script>
 </body>
 </html>

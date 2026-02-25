@@ -1,8 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     const body = document.body;
     const toggleButton = document.getElementById('theme-toggle');
-
-    /* === Math Tip === */
     const tips = [
         "Further Maths Core Pure Fact: The conjugate of a complex number z = a + bi is z̄ = a - bi",
         "Further Maths Core Pure Fact: The modulus of z = a + bi is |z| = √(a² + b²)",
@@ -126,8 +124,6 @@ document.addEventListener("DOMContentLoaded", () => {
             setTimeout(() => mathTip.style.display = "none", 400);
         });
     }
-
-    /* === Dark Mode Toggle === */
     if (localStorage.getItem('theme') === 'dark') {
         body.classList.add('dark-mode');
         toggleButton.textContent = '☀️';
@@ -143,9 +139,7 @@ document.addEventListener("DOMContentLoaded", () => {
             localStorage.setItem('theme', 'light');
         }
     });
-
-    /* === Page Fade In / Out === */
-    body.classList.add('fade-in'); // fade in on page load
+    body.classList.add('fade-in');
 
     const links = document.querySelectorAll('a.NavItem, a.home');
     links.forEach(link => {
@@ -154,7 +148,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const href = link.getAttribute('href');
             body.classList.remove('fade-in');
             body.classList.add('fade-out');
-            setTimeout(() => window.location.href = href, 300); // faster transition
+            setTimeout(() => window.location.href = href, 300);
         });
     });
 });
