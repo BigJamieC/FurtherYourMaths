@@ -70,245 +70,244 @@ document.addEventListener("DOMContentLoaded", () => {
         output.textContent = "❌ " + msg;
         errorTrue = true;
     }
-    function removeError(){
+    function removeError() {
         output.textContent = "";
         errorTrue = false;
     }
-function renderTableau(tableau, variableNames, thetaColumn=null, pivotColumn=null, pivotRow=null) { //sets theta column and pivots to null as they do not generate in first tableau
-    const container = document.getElementById("tableau-container");
-    //container.innerHTML = "";
-    const table = document.createElement("table");
-    table.classList.add("simplex-tableau");
-    // Header row
-    const headerRow = document.createElement("tr");
-    for (let name of variableNames) {
-        const th = document.createElement("th");
-        th.textContent = name;
-        headerRow.appendChild(th);
-    }
-const rhsHeader = document.createElement("th");
-rhsHeader.textContent = "RHS";
-headerRow.appendChild(rhsHeader);
-if (thetaColumn !== null) {
-    const th = document.createElement("th");
-    th.textContent = "θ";
-    headerRow.appendChild(th);
-}
-    table.appendChild(headerRow);
-    // Data rows
-    for (let i = 0; i < tableau.length; i++) {
-        const row = document.createElement("tr");
-        if (pivotRow !== null && i === pivotRow){
-            row.classList.add("pivot-row");
+    function renderTableau(tableau, variableNames, thetaColumn = null, pivotColumn = null, pivotRow = null) { //sets theta column and pivots to null as they do not generate in first tableau
+        const container = document.getElementById("tableau-container");
+        //container.innerHTML = "";
+        const table = document.createElement("table");
+        table.classList.add("simplex-tableau");
+        // Header row
+        const headerRow = document.createElement("tr");
+        for (let name of variableNames) {
+            const th = document.createElement("th");
+            th.textContent = name;
+            headerRow.appendChild(th);
         }
-        for (let j = 0; j < tableau[i].length; j++) {
-            const td = document.createElement("td");
-            td.textContent = Number(tableau[i][j].toFixed(3));
-            // Highlight negative values in objective row
-            if (i == tableau.length - 1 && tableau[i][j] < 0) {
-                td.classList.add("negative");
-            }
-            if (pivotColumn !== null && j === pivotColumn) {
-                td.classList.add("pivot-column");
-            }
-            row.appendChild(td);
+        const rhsHeader = document.createElement("th");
+        rhsHeader.textContent = "RHS";
+        headerRow.appendChild(rhsHeader);
+        if (thetaColumn !== null) {
+            const th = document.createElement("th");
+            th.textContent = "θ";
+            headerRow.appendChild(th);
         }
-if (thetaColumn !== null && i < tableau.length - 1) {
-    const thetaCell = document.createElement("td");
-    const value = thetaColumn[i];
-    if (value === undefined || value === null) {
-    thetaCell.textContent = "-";
-} else {
-    thetaCell.textContent = Number(value).toFixed(3);
-}
-    row.appendChild(thetaCell);
-}
+        table.appendChild(headerRow);
+        // Data rows
+        for (let i = 0; i < tableau.length; i++) {
+            const row = document.createElement("tr");
+            if (pivotRow !== null && i == pivotRow) {
+                row.classList.add("pivot-row");
+            }
+            for (let j = 0; j < tableau[i].length; j++) {
+                const td = document.createElement("td");
+                td.textContent = Number(tableau[i][j].toFixed(3));
+                // Highlight negative values in objective row
+                if (i == tableau.length - 1 && tableau[i][j] < 0) {
+                    td.classList.add("negative");
+                }
+                if (pivotColumn !== null && j == pivotColumn) {
+                    td.classList.add("pivot-column");
+                }
+                row.appendChild(td);
+            }
+            if (thetaColumn !== null && i < tableau.length - 1) {
+                const thetaCell = document.createElement("td");
+                const value = thetaColumn[i];
+                if (value == undefined || value == null) {
+                    thetaCell.textContent = "-";
+                } else {
+                    thetaCell.textContent = Number(value).toFixed(3);
+                }
+                row.appendChild(thetaCell);
+            }
 
-        table.appendChild(row);
-    }
-    container.appendChild(table);
-}
-function findPivotColumn(tableau) {
-    const objectiveRow = tableau[tableau.length - 1];
-    let pivotCol = -1;
-    let minValue = 0;
-    for (let j = 0; j < objectiveRow.length - 1; j++) {    // ignore RHS column
-        if (objectiveRow[j] < minValue) {
-            minValue = objectiveRow[j];
-            pivotCol = j;
+            table.appendChild(row);
         }
+        container.appendChild(table);
     }
-    return pivotCol;
-}
-function findTheta(tableau, pivotColumn){
-    if (pivotColumn === -1 || pivotColumn === null){
-        return null;
-    }
-    const theta = [];
-    for (let i = 0; i < tableau.length - 1; i++) {
-        const pivotValue = tableau[i][pivotColumn];
-        const rhs = tableau[i][tableau[i].length - 1];
-        if (pivotValue > 0) {
-            theta.push(rhs / pivotValue);
-        } else {
-            theta.push(null);
+    function findPivotColumn(tableau) {
+        const objectiveRow = tableau[tableau.length - 1];
+        let pivotCol = -1;
+        let minValue = 0;
+        for (let j = 0; j < objectiveRow.length - 1; j++) {    // ignore RHS column
+            if (objectiveRow[j] < minValue) {
+                minValue = objectiveRow[j];
+                pivotCol = j;
+            }
         }
+        return pivotCol;
     }
-    return theta;
-}
-function findPivotRow(thetaColumn){
-    let min = Infinity;
-    let pivotRow = -1;
-    for (let i = 0; i < thetaColumn.length; i++){
-        const value = thetaColumn[i];
-        if (value !== null && value > 0 && value < min){
-            min = value;
-            pivotRow = i;
+    function findTheta(tableau, pivotColumn) {
+        if (pivotColumn == -1 || pivotColumn == null) {
+            return null;
         }
-    }
-    return pivotRow;
-}
-function RowDividedTheta(tableau, pivotRow, pivotColumn){
-    if (pivotRow == -1 || pivotColumn == -1){
-        return tableau;
-    }
-    const pivotValue = tableau[pivotRow][pivotColumn];
-    if (pivotValue == 0 || pivotValue == null || pivotValue == undefined){
-        return tableau;
-    }
-    const newTableau = JSON.parse(JSON.stringify(tableau));
-    for (let j = 0; j < newTableau[pivotRow].length; j++){
-        newTableau[pivotRow][j] = (newTableau[pivotRow][j] / pivotValue);
-    }
-    return newTableau;
-}
-function eliminatePivotColumn(tableau, pivotRow, pivotColumn){
-    if (pivotRow == -1 || pivotColumn == -1) return tableau;
-    const newTableau = JSON.parse(JSON.stringify(tableau));
-    const pivotValue = newTableau[pivotRow][pivotColumn];
-    for (let i = 0; i < newTableau.length; i++){
-        if (i == pivotRow) continue;
-        const factor = newTableau[i][pivotColumn];
-        if (factor == 0) continue;
-        for (let j = 0; j < newTableau[i].length; j++){
-            newTableau[i][j] -= factor * newTableau[pivotRow][j];
+        const theta = [];
+        for (let i = 0; i < tableau.length - 1; i++) {
+            const pivotValue = tableau[i][pivotColumn];
+            const rhs = tableau[i][tableau[i].length - 1];
+            if (pivotValue > 0) {
+                theta.push(rhs / pivotValue);
+            } else {
+                theta.push(null);
+            }
         }
+        return theta;
     }
-    return newTableau;
-}
-function SimplexItterations(tableau, variableNames) {
-    let currentTableau = JSON.parse(JSON.stringify(tableau));
-    const steps = [];
-    const maxIterations = 100;
-    for (let iteration = 0; iteration < maxIterations; iteration++) {
-        const pivotColumn = findPivotColumn(currentTableau);
-        const lastRow = currentTableau[currentTableau.length - 1];
-        let explanation = "";
-        if (pivotColumn == -1) {
-            explanation += "All values in the objective row are ≥ 0.\n";
-            explanation += "No entering variable improves the objective function.\n";
-            explanation += "Therefore the current solution is optimal.";
+    function findPivotRow(thetaColumn) {
+        let min = Infinity;
+        let pivotRow = -1;
+        for (let i = 0; i < thetaColumn.length; i++) {
+            const value = thetaColumn[i];
+            if (value !== null && value > 0 && value < min) {
+                min = value;
+                pivotRow = i;
+            }
+        }
+        return pivotRow;
+    }
+    function RowDividedTheta(tableau, pivotRow, pivotColumn) {
+        if (pivotRow == -1 || pivotColumn == -1) {
+            return tableau;
+        }
+        const pivotValue = tableau[pivotRow][pivotColumn];
+        if (pivotValue == 0 || pivotValue == null || pivotValue == undefined) {
+            return tableau;
+        }
+        const newTableau = JSON.parse(JSON.stringify(tableau));
+        for (let j = 0; j < newTableau[pivotRow].length; j++) {
+            newTableau[pivotRow][j] = (newTableau[pivotRow][j] / pivotValue);
+        }
+        return newTableau;
+    }
+    function eliminatePivotColumn(tableau, pivotRow, pivotColumn) {
+        if (pivotRow == -1 || pivotColumn == -1) return tableau;
+        const newTableau = JSON.parse(JSON.stringify(tableau));
+        const pivotValue = newTableau[pivotRow][pivotColumn];
+        for (let i = 0; i < newTableau.length; i++) {
+            if (i == pivotRow) continue;
+            const factor = newTableau[i][pivotColumn];
+            if (factor == 0) continue;
+            for (let j = 0; j < newTableau[i].length; j++) {
+                newTableau[i][j] -= factor * newTableau[pivotRow][j];
+            }
+        }
+        return newTableau;
+    }
+    function SimplexItterations(tableau, variableNames) {
+        let currentTableau = JSON.parse(JSON.stringify(tableau));
+        const steps = [];
+        const maxIterations = 100;
+        for (let iteration = 0; iteration < maxIterations; iteration++) {
+            const pivotColumn = findPivotColumn(currentTableau);
+            const lastRow = currentTableau[currentTableau.length - 1];
+            let explanation = "";
+            if (pivotColumn == -1) {
+                explanation += "All values in the objective row are ≥ 0.\n";
+                explanation += "Therefore the current solution is optimal.";
+                steps.push({
+                    tableau: JSON.parse(JSON.stringify(currentTableau)),
+                    pivotColumn: -1,
+                    pivotRow: -1,
+                    theta: null,
+                    explanation
+                });
+                break;
+            }
+            const enteringVar = variableNames[pivotColumn];
+            const enteringValue = lastRow[pivotColumn];
+            explanation +=
+                "The most negative value in the objective row is "
+                + enteringValue.toFixed(2)
+                + " in column " + enteringVar + ".\n";
+            explanation +=
+                "The " + enteringVar + " column will then become the pivot column.\n\n";
+            const thetaColumn = findTheta(currentTableau, pivotColumn);
+            explanation += "Theta (θ) values = (RHS ÷ pivot column):\n";
+            for (let i = 0; i < thetaColumn.length; i++) {
+                if (thetaColumn[i] == null) {
+                    explanation += "Row " + (i + 1) + ": not valid (division by ≤ 0)\n";
+                } else {
+                    explanation +=
+                        "Row " + (i + 1) + ": "
+                        + thetaColumn[i].toFixed(2) + "\n";
+                }
+            }
+            const pivotRow = findPivotRow(thetaColumn);
+            if (pivotRow == -1 || pivotRow == null) {
+                explanation += "\nNo valid theta values. The problem is unbounded.";
+            } else {
+                explanation +=
+                    "\nSmallest positive theta is "
+                    + thetaColumn[pivotRow].toFixed(2)
+                    + " in Row " + (pivotRow + 1) + ".\n";
+                explanation +=
+                    "Row " + (pivotRow + 1)
+                    + " becomes the pivot row.\n\n";
+                const pivotElement = currentTableau[pivotRow][pivotColumn];
+                explanation +=
+                    "Pivot element is "
+                    + pivotElement.toFixed(2) + ".\n";
+                explanation +=
+                    "Divide the pivot row by "
+                    + pivotElement.toFixed(2)
+                    + " to make the pivot element equal 1.\n";
+                explanation +=
+                    "Then eliminate the pivot column from all other rows.";
+            }
             steps.push({
                 tableau: JSON.parse(JSON.stringify(currentTableau)),
-                pivotColumn: -1,
-                pivotRow: -1,
-                theta: null,
+                pivotColumn,
+                pivotRow,
+                theta: thetaColumn,
                 explanation
             });
-            break;
+
+            if (pivotRow == -1 || pivotRow == null) break;
+
+            currentTableau = RowDividedTheta(currentTableau, pivotRow, pivotColumn);
+            currentTableau = eliminatePivotColumn(currentTableau, pivotRow, pivotColumn);
         }
-        const enteringVar = variableNames[pivotColumn];
-        const enteringValue = lastRow[pivotColumn];
-        explanation += 
-            "The most negative value in the objective row is " 
-            + enteringValue.toFixed(2) 
-            + " in column " + enteringVar + ".\n";
-        explanation += 
-            enteringVar + " enters the basis because increasing it will increase the objective value.\n\n";
-        const thetaColumn = findTheta(currentTableau, pivotColumn);
-        explanation += "Theta values (RHS ÷ pivot column):\n";
-        for (let i = 0; i < thetaColumn.length; i++) {
-            if (thetaColumn[i] == null) {
-                explanation += "Row " + (i+1) + ": not valid (division by ≤ 0)\n";
+        return steps;
+    }
+    function displayResult(tableau, variableNames, objectiveType) {
+        const output = document.getElementById("parsed-result");
+        const rhsIndex = tableau[0].length - 1;
+        const solution = {};
+        for (let col = 0; col < variableNames.length; col++) {
+            let basicRow = -1;
+            let isBasic = true;
+            for (let i = 0; i < tableau.length - 1; i++) {
+                if (Math.abs(tableau[i][col] - 1) < 1e-6) {
+                    if (basicRow == -1) basicRow = i;
+                    else isBasic = false;
+                } else if (Math.abs(tableau[i][col]) > 1e-6) {
+                    isBasic = false;
+                }
+            }
+            if (isBasic && basicRow !== -1) {
+                solution[variableNames[col]] = Number(tableau[basicRow][rhsIndex].toFixed(3));
             } else {
-                explanation += 
-                    "Row " + (i+1) + ": " 
-                    + thetaColumn[i].toFixed(2) + "\n";
+                solution[variableNames[col]] = 0;
             }
         }
-        const pivotRow = findPivotRow(thetaColumn);
-        if (pivotRow === -1 || pivotRow === null) {
-            explanation += "\nNo valid theta values. The problem is unbounded.";
-        } else {
-            explanation += 
-                "\nSmallest positive theta is " 
-                + thetaColumn[pivotRow].toFixed(2) 
-                + " in Row " + (pivotRow + 1) + ".\n";
-            explanation += 
-                "Row " + (pivotRow + 1) 
-                + " leaves the basis.\n\n";
-            const pivotElement = currentTableau[pivotRow][pivotColumn];
-            explanation += 
-                "Pivot element is " 
-                + pivotElement.toFixed(2) + ".\n";
-            explanation += 
-                "Divide the pivot row by " 
-                + pivotElement.toFixed(2) 
-                + " to make it 1.\n";
-            explanation += 
-                "Then eliminate the pivot column from all other rows.";
+        const objectiveValue = Number(tableau[tableau.length - 1][rhsIndex].toFixed(3));
+        let resultText = "✅ Optimal Solution Found\n\n";
+        resultText += "Optimal Variable Values:\n";
+        for (let v in solution) {
+            resultText += `${v} = ${solution[v]}\n`;
         }
-        steps.push({
-            tableau: JSON.parse(JSON.stringify(currentTableau)),
-            pivotColumn,
-            pivotRow,
-            theta: thetaColumn,
-            explanation
-        });
-
-        if (pivotRow == -1 || pivotRow == null) break;
-
-        currentTableau = RowDividedTheta(currentTableau, pivotRow, pivotColumn);
-        currentTableau = eliminatePivotColumn(currentTableau, pivotRow, pivotColumn);
+        resultText += "\nObjective Value: " + objectiveValue;
+        resultText += "\nObjective Type: " + objectiveType.toUpperCase();
+        output.textContent = resultText;
     }
-    return steps;
-}
-function displayResult(tableau, variableNames, objectiveType){
-    const output = document.getElementById("parsed-result");
-    const rhsIndex = tableau[0].length - 1;
-    const solution = {};
-    for (let col = 0; col < variableNames.length; col++){
-        let basicRow = -1;
-        let isBasic = true;
-        for (let i = 0; i < tableau.length - 1; i++){
-            if (Math.abs(tableau[i][col] - 1) < 1e-6){
-                if (basicRow === -1) basicRow = i;
-                else isBasic = false;
-            } else if (Math.abs(tableau[i][col]) > 1e-6){
-                isBasic = false;
-            }
-        }
-        if (isBasic && basicRow !== -1){
-            solution[variableNames[col]] = Number(tableau[basicRow][rhsIndex].toFixed(3));
-        } else {
-            solution[variableNames[col]] = 0;
-        }
-    }
-    const objectiveValue = Number(tableau[tableau.length - 1][rhsIndex].toFixed(3));
-    let resultText = "✅ Optimal Solution Found\n\n";
-    resultText += "Optimal Variable Values:\n";
-    for (let v in solution){
-        resultText += `${v} = ${solution[v]}\n`;
-    }
-    resultText += "\nObjective Value: " + objectiveValue;
-    resultText += "\nObjective Type: " + objectiveType.toUpperCase();
-    output.textContent = resultText;
-}
     parseBtn.addEventListener("click", function () {
         removeError();
         const rawInput = textarea.value;
         const input = normalizeRaw(rawInput);
-        if (input.length === 0 || !rawInput) {
+        if (input.length == 0 || !rawInput) {
             showError("Input is empty!");
             return;
         }
@@ -363,8 +362,8 @@ function displayResult(tableau, variableNames, objectiveType){
         // parse constraints
         const constraints = [];
         for (const rawLine of constraintCandidates) {
-            if (/^x[\d,\s]*>=\s*0$/i.test(rawLine.replace(/\s+/g,""))) {
-            continue;
+            if (/^x[\d,\s]*>=\s*0$/i.test(rawLine.replace(/\s+/g, ""))) {
+                continue;
             }
             const match = rawLine.match(/(.*?)(<=|>=|=)(.*)/);
             if (!match) continue;
@@ -395,91 +394,97 @@ function displayResult(tableau, variableNames, objectiveType){
         }
         // pad or trim constraint arrays
         for (const x of constraints) {
-            while (x.coeffs.length < maxVar){
+            while (x.coeffs.length < maxVar) {
                 x.coeffs.push(0)
-                if (x.coeffs.length > maxVar){
-                     x.coeffs.length = maxVar;
+                if (x.coeffs.length > maxVar) {
+                    x.coeffs.length = maxVar;
                 }
             }
         }
-const namedObjective = [];
-for (let i = 0; i < objectiveArray.length; i++) {
-    const item = {
-        variable: "x" + (i + 1),
-        coeff: objectiveArray[i]
-    };
-    namedObjective.push(item);
-}
-const namedConstraints = [];
-for (let i = 0; i < constraints.length; i++) {
-    const oldConstraint = constraints[i];
-    const newConstraint = {
-        sign: oldConstraint.sign,
-        rhs: oldConstraint.rhs,
-        coeffs: []
-    };
-    for (let j = 0; j < oldConstraint.coeffs.length; j++) {
-        const coeffItem = {
-            variable: "x" + (j + 1),
-            coeff: oldConstraint.coeffs[j]
+        const namedObjective = [];
+        for (let i = 0; i < objectiveArray.length; i++) {
+            const item = {
+                variable: "x" + (i + 1),
+                coeff: objectiveArray[i]
+            };
+            namedObjective.push(item);
+        }
+        const namedConstraints = [];
+        for (let i = 0; i < constraints.length; i++) {
+            const oldConstraint = constraints[i];
+            const newConstraint = {
+                sign: oldConstraint.sign,
+                rhs: oldConstraint.rhs,
+                coeffs: []
+            };
+            for (let j = 0; j < oldConstraint.coeffs.length; j++) {
+                const coeffItem = {
+                    variable: "x" + (j + 1),
+                    coeff: oldConstraint.coeffs[j]
+                };
+                newConstraint.coeffs.push(coeffItem);
+            }
+            namedConstraints.push(newConstraint);
+        }
+        const parsed = {
+            "Objective Type": objectiveType, "Highest variable": maxVar, "Objective Function": namedObjective, "Constraints": namedConstraints
         };
-        newConstraint.coeffs.push(coeffItem);
-    }
-    namedConstraints.push(newConstraint);
-}
-const parsed = {"Objective Type": objectiveType,"Highest variable": maxVar,"Objective Function": namedObjective,"Constraints": namedConstraints
-};
-output.textContent = JSON.stringify(parsed, null, 2);
-let tableau = buildTableau(parsed);
-// build variable names
-const variableNames = [];
-for (let i = 0; i < parsed["Highest variable"]; i++) {
-    variableNames.push("x" + (i + 1));
-}
-let slackCount = 0;
-let artificialCount = 0;
-for (let c of parsed.Constraints) {
-    if (c.sign === "<=") slackCount++;
-    if (c.sign === ">=" || c.sign === "=") artificialCount++;
-}
-for (let i = 0; i < slackCount; i++) {
-    variableNames.push("s" + (i + 1));
-}
-for (let i = 0; i < artificialCount; i++) {
-    variableNames.push("a" + (i + 1));
-}
-const steps = SimplexItterations(tableau, variableNames);
-const container = document.getElementById("tableau-container");
-container.innerHTML = "";
-for (let i = 0; i < steps.length; i++) {
-    const stepTitle = document.createElement("h3");
-    stepTitle.textContent = "Iteration " + i;
-    container.appendChild(stepTitle);
-    renderTableau(
-        steps[i].tableau,
-        variableNames,
-        steps[i].theta,
-        steps[i].pivotColumn,
-        steps[i].pivotRow
-    );
-    if (steps[i].explanation) {
-        const explanationBox = document.createElement("div");
-        explanationBox.className = "step-explanation";
-        explanationBox.style.whiteSpace = "pre-line";
-        explanationBox.style.marginBottom = "25px";
-        explanationBox.textContent = steps[i].explanation;
-        container.appendChild(explanationBox);
-    }
-}
-// final tableau is last step
-const finalTableau = steps[steps.length - 1].tableau;
-displayResult(finalTableau, variableNames, parsed["Objective Type"]);
+        output.textContent = JSON.stringify(parsed, null, 2);
+        let tableau = buildTableau(parsed);
+        // build variable names
+        const variableNames = [];
+        for (let i = 0; i < parsed["Highest variable"]; i++) {
+            variableNames.push("x" + (i + 1));
+        }
+        let slackCount = 0;
+        let artificialCount = 0;
+        for (let c of parsed.Constraints) {
+            if (c.sign == "<=") slackCount++;
+            if (c.sign == ">=" || c.sign == "=") artificialCount++;
+        }
+        for (let i = 0; i < slackCount; i++) {
+            variableNames.push("s" + (i + 1));
+        }
+        for (let i = 0; i < artificialCount; i++) {
+            variableNames.push("a" + (i + 1));
+        }
+        const steps = SimplexItterations(tableau, variableNames);
+        const container = document.getElementById("tableau-container");
+        container.innerHTML = "";
+        for (let i = 0; i < steps.length; i++) {
+            const stepTitle = document.createElement("h3");
+            if (i==0){
+                stepTitle.textContent = "Initial Tableau";
+            }
+            else{
+                stepTitle.textContent = "Iteration " + i;
+            }
+            container.appendChild(stepTitle);
+            renderTableau(
+                steps[i].tableau,
+                variableNames,
+                steps[i].theta,
+                steps[i].pivotColumn,
+                steps[i].pivotRow
+            );
+            if (steps[i].explanation) {
+                const explanationBox = document.createElement("div");
+                explanationBox.className = "step-explanation";
+                explanationBox.style.whiteSpace = "pre-line";
+                explanationBox.style.marginBottom = "25px";
+                explanationBox.textContent = steps[i].explanation;
+                container.appendChild(explanationBox);
+            }
+        }
+        // final tableau is last step
+        const finalTableau = steps[steps.length - 1].tableau;
+        displayResult(finalTableau, variableNames, parsed["Objective Type"]);
     });
     function buildTableau(parsed) {
         const constraints = parsed.Constraints;
-        const maxVar=parsed["Highest variable"];
-        const objectiveType=parsed["Objective Type"];
-        const tableau=[];
+        const maxVar = parsed["Highest variable"];
+        const objectiveType = parsed["Objective Type"];
+        const tableau = [];
         let slackIndex = 0;
         let artificialIndex = 0;
         const slackColumns = [];
@@ -518,10 +523,10 @@ displayResult(finalTableau, variableNames, parsed["Objective Type"]);
             tableau.push(row);
         }
         // objective row
-        const objRow=[];
+        const objRow = [];
         for (let j = 0; j < maxVar; j++) {
             let value = parsed["Objective Function"][j].coeff;
-            if (objectiveType == "max") value=-value;
+            if (objectiveType == "max") value = -value;
             objRow.push(value)
         }
         for (let j = 0; j < totalSlack + totalArtificial; j++) objRow.push(0);
